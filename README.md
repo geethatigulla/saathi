@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Live app** | https://saathi-sand-gamma.vercel.app/ |
+| **Live demo app** | https://saathi-sand-gamma.vercel.app/ |
 | **Scripted demo (no AI calls)** | https://saathi-sand-gamma.vercel.app/demo |
 | **Code** | https://github.com/geethatigulla/saathi |
 
