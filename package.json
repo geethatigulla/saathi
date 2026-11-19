@@ -1,0 +1,14 @@
+{
+  "name": "saathi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Saathi: voice-first agent that turns a voice note and bank history into a bank-ready MSME loan file.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node dev-server.js",
+    "mock": "node dev-server.js --mock"
+  }
+}

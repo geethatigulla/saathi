@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Saathi Loan Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;500;600&family=Noto+Sans+Kannada:wght@400;500;600&display=swap">
+<style>
+/* Layout: owner's phone (left, sticky) beside the bank's dashboard (right); stacked with a view switch on narrow screens. */
+:root{
+  --bg:#EDF2F0; --surface:#FFFFFF; --surface-2:#F4F7F6; --ink:#14302C; --muted:#566B66; --line:#D5DFDB;
+  --primary:#0E5E57; --primary-ink:#FFFFFF; --primary-soft:#DCEEE9;
+  --accent:#E3A21A; --accent-soft:#FBEFD2; --accent-ink:#3A2A00;
+  --good:#1D7F49; --good-soft:#DDF1E5; --warn:#9A620A; --warn-soft:#FBEBCF; --bad:#B63A33; --bad-soft:#F8DEDC; --info:#2C67A6; --info-soft:#DFEAF6;
+  --chat:#E5EDEA; --device:#1B2B28; --bubble-user:#D1EBE2; --scrim:rgba(10,22,20,.55);
+  --shadow:0 1px 2px rgba(16,40,36,.06),0 10px 28px rgba(16,40,36,.07);
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Inter","Noto Sans Kannada",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-kn:"Noto Sans Kannada","Tunga","Nirmala UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1311; --surface:#141E1B; --surface-2:#1A2622; --ink:#E3ECE9; --muted:#97AAA4; --line:#27352F;
+  --primary:#3DB0A0; --primary-ink:#04201C; --primary-soft:#163A34;
+  --accent:#F0B53F; --accent-soft:#3A2E12; --accent-ink:#1E1500;
+  --good:#4CC27F; --good-soft:#153524; --warn:#E3A13A; --warn-soft:#3A2B12; --bad:#EE7A70; --bad-soft:#3D1D1B; --info:#6EA8E8; --info-soft:#16283D;
+  --chat:#0F1916; --device:#000000; --bubble-user:#1C463F; --scrim:rgba(0,0,0,.65);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1311; --surface:#141E1B; --surface-2:#1A2622; --ink:#E3ECE9; --muted:#97AAA4; --line:#27352F;
+  --primary:#3DB0A0; --primary-ink:#04201C; --primary-soft:#163A34;
+  --accent:#F0B53F; --accent-soft:#3A2E12; --accent-ink:#1E1500;
+  --good:#4CC27F; --good-soft:#153524; --warn:#E3A13A; --warn-soft:#3A2B12; --bad:#EE7A70; --bad-soft:#3D1D1B; --info:#6EA8E8; --info-soft:#16283D;
+  --chat:#0F1916; --device:#000000; --bubble-user:#1C463F; --scrim:rgba(0,0,0,.65);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 32px}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--primary)}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.fill{fill:currentColor;stroke:none}
+.wrap{max-width:1480px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+/* Top bar */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:42px;height:42px;border-radius:13px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;flex:none}
+.logo .ic{width:22px;height:22px}
+.brand h1{font-family:var(--f-display);font-size:26px;line-height:1;margin:0;letter-spacing:-.01em}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.personas{display:flex;flex-wrap:wrap;gap:6px}
+.pbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px 5px 5px;display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left}
+.pbtn .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:11.5px;background:var(--primary-soft);color:var(--primary);flex:none}
+.pbtn b{font-weight:600;font-size:13px;display:block;line-height:1.2}
+.pbtn small{display:block;color:var(--muted);font-size:11px;line-height:1.2}
+.pbtn[aria-pressed="true"]{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;cursor:pointer;font-weight:500;font-size:13px}
+.btn:hover{border-color:var(--primary)}
+.btn[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn .ic{width:16px;height:16px}
+.notice{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.notice b{color:var(--ink);font-weight:600}
+.tag{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:1px 7px;border-radius:6px;background:var(--accent-soft);color:var(--warn)}
+
+/* Stage */
+.stage{display:grid;grid-template-columns:minmax(330px,400px) minmax(0,1fr);gap:20px;align-items:start}
+.phonecol{position:sticky;top:max(12px,env(safe-area-inset-top,0px))}
+.viewtabs{display:none;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px}
+.viewtabs button{flex:1;border:0;background:transparent;border-radius:9px;padding:8px;font-weight:600;cursor:pointer;position:relative}
+.viewtabs button[aria-selected="true"]{background:var(--primary);color:var(--primary-ink)}
+.viewtabs button.dot::after{content:"";position:absolute;top:7px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+@media (max-width:1000px){
+  .stage{grid-template-columns:minmax(0,1fr)}
+  .viewtabs{display:flex}
+  .phonecol{position:static;max-width:440px;width:100%;margin:0 auto}
+  .stage[data-view="phone"] .dashcol{display:none}
+  .stage[data-view="dash"] .phonecol{display:none}
+}
+
+/* Phone */
+.phone{background:var(--device);border-radius:34px;padding:9px;box-shadow:var(--shadow)}
+.screen{background:var(--chat);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;height:min(800px,calc(100vh - 140px));min-height:560px}
+@media (max-width:1000px){.screen{height:calc(100dvh - 210px);min-height:520px}}
+.ph-head{background:var(--primary);color:var(--primary-ink);padding:11px 12px;display:flex;align-items:center;gap:10px}
+.ph-av{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:700;flex:none}
+.ph-t{flex:1;min-width:0}
+.ph-t b{font-family:var(--f-display);font-size:16px;display:flex;align-items:center;gap:5px}
+.ph-t small{display:block;font-size:11.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbtn{border:0;background:rgba(255,255,255,.16);border-radius:9px;padding:6px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:inherit}
+.hbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.hbtn .ic{width:15px;height:15px}
+.feed{flex:1;overflow-y:auto;padding:14px 10px 10px;display:flex;flex-direction:column;gap:8px}
+.daychip{align-self:center;font-size:11px;background:var(--surface);color:var(--muted);padding:3px 10px;border-radius:8px}
+.msg{max-width:88%;padding:8px 11px 7px;border-radius:14px;box-shadow:0 1px 1px rgba(0,0,0,.06);position:relative;animation:pop .22s ease-out}
+.msg.bot{background:var(--surface);align-self:flex-start;border-top-left-radius:4px;padding-right:34px}
+.msg.user{background:var(--bubble-user);align-self:flex-end;border-top-right-radius:4px}
+.msg .role{display:block;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--warn);margin-bottom:2px}
+.pri{font-size:14.5px}
+.kn{font-family:var(--f-kn);line-height:1.62}
+.sub{font-size:12.5px;color:var(--muted);margin-top:5px;padding-top:5px;border-top:1px dashed var(--line)}
+.say{position:absolute;top:6px;right:6px;border:0;background:var(--surface-2);color:var(--primary);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.say .ic{width:14px;height:14px}
+.vn{display:flex;align-items:center;gap:8px;margin-bottom:4px;color:var(--primary)}
+.vn .ic{width:16px;height:16px}
+.wave{display:flex;align-items:center;gap:2px;height:20px;flex:1}
+.wave i{display:block;width:3px;border-radius:2px;background:currentColor;opacity:.6}
+.vn .dur{font-size:11px;color:var(--muted);font-family:var(--f-mono)}
+.rec{align-self:flex-end;font-size:12px;color:var(--bad);display:flex;align-items:center;gap:6px;background:var(--surface);padding:6px 10px;border-radius:10px}
+.rec i{width:8px;height:8px;border-radius:50%;background:var(--bad);animation:blink 1s infinite}
+.typing{align-self:flex-start;background:var(--surface);border-radius:14px;padding:10px 12px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bounce 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.ccard{align-self:stretch;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-left:2px;animation:pop .22s ease-out;font-size:13px}
+.ctitle{display:flex;align-items:center;gap:6px;font-weight:600;margin-bottom:8px;font-size:13px}
+.ctitle .ic{color:var(--primary)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0}
+.kv dt{color:var(--muted);font-size:12.5px}
+.kv dd{margin:0;font-weight:500;min-width:0}
+.fine{font-size:11.5px;color:var(--muted);margin-top:8px}
+.srow{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-top:1px solid var(--line)}
+.srow:first-of-type{border-top:0}
+.srow b{display:block;font-size:13.5px}
+.srow span{color:var(--muted);font-size:12.5px}
+.st{width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.st .ic{width:14px;height:14px;stroke-width:2.4}
+.st.ok{background:var(--good-soft);color:var(--good)} .st.no{background:var(--bad-soft);color:var(--bad)} .st.chk{background:var(--warn-soft);color:var(--warn)} .st.wait{background:var(--surface-2);color:var(--muted)}
+.linkbtn{border:0;background:none;color:var(--primary);font-weight:600;font-size:12px;cursor:pointer;padding:2px 0;display:inline-flex;align-items:center;gap:3px;text-decoration:underline;text-underline-offset:2px}
+.linkbtn .ic{width:13px;height:13px}
+.otp-boxes{display:flex;gap:8px;justify-content:center;margin:4px 0 6px}
+.otp-boxes span{width:38px;height:44px;border:1.5px solid var(--line);border-radius:10px;display:grid;place-items:center;font-family:var(--f-mono);font-size:20px}
+.otp.done .otp-boxes span{border-color:var(--good)}
+.otp-note{text-align:center;font-size:12px;color:var(--muted);display:flex;justify-content:center;gap:4px;align-items:center}
+.otp.done .otp-note{color:var(--good);font-weight:600}
+.bar{height:6px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--primary);animation:fill 1.3s ease-out forwards}
+.photo{width:170px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.photo .ph{height:96px;position:relative;background:repeating-linear-gradient(0deg,var(--surface-2) 0 12px,var(--surface) 12px 14px);display:flex;align-items:flex-end;padding:8px}
+.photo .ph::before{content:"SAMPLE";position:absolute;top:8px;right:8px;font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--muted);border:1px solid var(--line);padding:1px 4px;border-radius:4px}
+.photo .ph em{font-style:normal;font-size:11px;font-weight:600;background:var(--surface);padding:2px 6px;border-radius:5px}
+.photo .cap{padding:6px 8px;font-size:11.5px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.photo .cap .ic{width:13px;height:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--primary);color:var(--primary);background:var(--surface);border-radius:999px;padding:7px 13px;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;animation:pop .2s ease-out}
+.chip:hover{background:var(--primary-soft)}
+.chip.kn{font-family:var(--f-kn)}
+.chip .ic{width:16px;height:16px}
+.ph-foot{padding:10px 10px 12px;display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);background:var(--chat)}
+.microw{display:flex;align-items:center;gap:12px}
+.mic{width:54px;height:54px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.mic .ic{width:24px;height:24px}
+.mic:disabled{background:var(--line);color:var(--muted);cursor:default}
+.mic.live{animation:pulse 1.3s infinite}
+.michint{font-size:12.5px;color:var(--muted);line-height:1.35}
+.michint b{color:var(--ink)}
+.mini-bars{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.mb{display:grid;grid-template-columns:96px 1fr auto;gap:8px;align-items:center;font-size:12px}
+.mb .tr{height:12px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.mb .tr i{display:block;height:100%;border-radius:6px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.steps li{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:12.5px}
+.steps li b{color:var(--primary);font-size:12px}
+.doclist{display:flex;flex-direction:column;gap:5px}
+.docrow{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.docrow .st{width:20px;height:20px}
+.subhead{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:8px 0 4px}
+
+/* Dashboard */
+.dash{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.dhead{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.dhead .who{display:flex;align-items:center;gap:10px;min-width:0}
+.dhead .who .ic{width:22px;height:22px;color:var(--primary)}
+.dhead h2{font-family:var(--f-display);font-size:18px;margin:0;line-height:1.2}
+.dhead small{color:var(--muted);display:block;font-size:12px}
+.tabs{display:flex;gap:2px;padding:0 10px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:0;background:none;padding:12px 10px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-size:13.5px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--primary)}
+.dbody{padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.sec{border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.sec h3{font-family:var(--f-display);font-size:16px;margin:0 0 4px;text-wrap:balance}
+.sec .lead{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.kpi span{font-size:12px;color:var(--muted);display:block}
+.kpi b{font-family:var(--f-display);font-size:22px;display:block;line-height:1.25;font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.info{background:var(--info-soft);color:var(--info)} .pill.muted{background:var(--surface-2);color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.live td{background:var(--primary-soft)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lock{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:48px 16px;color:var(--muted)}
+.lock .ic{width:34px;height:34px;color:var(--primary)}
+.lock h3{font-family:var(--f-display);color:var(--ink);margin:0;font-size:19px}
+.lock p{margin:0;max-width:46ch}
+.banner{display:flex;gap:8px;align-items:flex-start;border-radius:12px;padding:10px 12px;font-size:13px}
+.banner.warn{background:var(--warn-soft);color:var(--ink)} .banner.info{background:var(--info-soft);color:var(--ink)}
+.banner .ic{flex:none;margin-top:1px}
+.fhead{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-start;justify-content:space-between}
+.fhead h3{font-family:var(--f-display);font-size:20px;margin:0}
+.fhead p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.fact span{display:block;font-size:11.5px;color:var(--muted)}
+.fact b{font-size:15px;font-variant-numeric:tabular-nums}
+.gaugewrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.gauge{width:170px;height:auto;flex:none}
+.g-track{fill:none;stroke:var(--surface-2);stroke-width:14;stroke-linecap:round}
+.g-val{fill:none;stroke-width:14;stroke-linecap:round}
+.g-val.good{stroke:var(--good)} .g-val.warn{stroke:var(--warn)} .g-val.bad{stroke:var(--bad)}
+.g-num{font-family:var(--f-display);font-size:30px;font-weight:700;fill:var(--ink)}
+.g-sub{font-size:10px;fill:var(--muted)}
+.reasons{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.reasons li{display:grid;grid-template-columns:20px 1fr;gap:6px;font-size:13px}
+.reasons .st{width:20px;height:20px}
+.chart{width:100%;height:auto;display:block}
+.c-in{fill:var(--primary)} .c-out{fill:var(--muted);opacity:.38} .c-sur{fill:none;stroke:var(--accent);stroke-width:2.2} .c-dot{fill:var(--accent);stroke:var(--surface);stroke-width:1.5}
+.c-grid{stroke:var(--line);stroke-width:1} .c-lab{fill:var(--muted);font-size:11px;font-family:var(--f-body)} .c-lean{fill:var(--accent-soft)}
+.c-hatch line{stroke:var(--line);stroke-width:2} .c-cap{fill:var(--primary);opacity:.8}
+.c-emi-bad{stroke:var(--bad);stroke-width:2;stroke-dasharray:6 4} .c-emi-good{stroke:var(--good);stroke-width:2}
+.c-diag{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1.2} .c-cal{fill:none;stroke:var(--primary);stroke-width:2} .c-calpt{fill:var(--primary)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.elig{display:flex;flex-direction:column;gap:10px}
+.scheme{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.scheme summary{list-style:none;display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
+.scheme summary::-webkit-details-marker{display:none}
+.scheme summary b{flex:1;min-width:0}
+.scheme .chk{display:flex;flex-direction:column;gap:6px;padding:4px 12px 12px}
+.crow{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:start;font-size:12.5px}
+.crow .st{width:20px;height:20px}
+.audit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.audit li{display:grid;grid-template-columns:110px 1fr;gap:8px}
+.audit time{color:var(--muted);font-family:var(--f-mono);font-size:11.5px}
+.whatif{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px 18px}
+.whatif label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.whatif label b{color:var(--ink);font-variant-numeric:tabular-nums}
+.whatif input[type=range]{width:100%;accent-color:var(--primary)}
+.money{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px 16px}
+.money label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}
+.money input{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 9px;font:inherit;font-family:var(--f-mono);width:100%}
+.hbars{display:flex;flex-direction:column;gap:8px}
+.hb{display:grid;grid-template-columns:minmax(120px,190px) 1fr 44px;gap:10px;align-items:center;font-size:12.5px}
+.hb .tr{height:14px;background:var(--surface-2);border-radius:7px;overflow:hidden}
+.hb .tr i{display:block;height:100%;background:var(--primary);border-radius:7px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.listplain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.foot{font-size:12px;color:var(--muted);text-align:center;max-width:90ch;margin:4px auto 0}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:var(--scrim);display:grid;place-items:center;z-index:50;padding:16px}
+.mbox{background:var(--surface);color:var(--ink);border-radius:16px;max-width:640px;width:100%;max-height:86vh;overflow:auto;padding:20px 22px;box-shadow:var(--shadow)}
+.mbox h3{font-family:var(--f-display);font-size:19px;margin:0 0 2px}
+.mbox .meta{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.mbox blockquote{margin:0;padding:12px 14px;border-left:3px solid var(--accent);background:var(--surface-2);border-radius:0 10px 10px 0;font-size:14px;line-height:1.65}
+mark{background:var(--accent-soft);color:inherit;border-bottom:2px solid var(--accent);padding:0 2px;border-radius:2px}
+.mclose{float:right;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 10px;cursor:pointer}
+.report h4{font-size:13px;margin:14px 0 4px;color:var(--primary)}
+.report table td{padding:6px 8px}
+
+@keyframes pop{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(227,162,26,.55)}70%{box-shadow:0 0 0 14px rgba(227,162,26,0)}100%{box-shadow:0 0 0 0 rgba(227,162,26,0)}}
+@keyframes blink{50%{opacity:.2}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes fill{to{width:100%}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.bar i{width:100%}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg></div>
+      <div>
+        <h1>Saathi</h1>
+        <p>One voice note. One branch visit. Zero middlemen.</p>
+      </div>
+    </div>
+    <nav class="personas" id="personas" aria-label="Choose a business owner"></nav>
+    <div class="controls">
+      <button class="btn" id="autoBtn" aria-pressed="false" type="button"></button>
+      <button class="btn" id="restartBtn" type="button"></button>
+    </div>
+  </header>
+
+  <div class="notice">
+    <span><span class="tag">Demo</span>&nbsp; Fictional people and sample data. No real bank, account or ID is used.</span>
+    <span><b>Try it:</b> answer as the owner on the phone (tap the mic or a button) and watch the bank's dashboard fill in.</span>
+  </div>
+
+  <div class="viewtabs" role="tablist" aria-label="Switch view">
+    <button type="button" role="tab" id="vt-phone" aria-selected="true">Owner's phone</button>
+    <button type="button" role="tab" id="vt-dash" aria-selected="false">Bank dashboard</button>
+  </div>
+
+  <main class="stage" id="stage" data-view="phone">
+    <section class="phonecol" aria-label="Owner's phone">
+      <div class="phone">
+        <div class="screen">
+          <div class="ph-head">
+            <div class="ph-av" aria-hidden="true">S</div>
+            <div class="ph-t"><b>Saathi <span id="verified"></span></b><small id="phSub">Loan and scheme helper · free for owners</small></div>
+            <button class="hbtn" id="langBtn" type="button" title="Switch main language">ಕನ್ನಡ</button>
+            <button class="hbtn" id="subBtn" type="button" aria-pressed="true" title="Show translation under each message"></button>
+            <button class="hbtn" id="voiceBtn" type="button" aria-pressed="false" title="Read messages aloud"></button>
+          </div>
+          <div class="feed" id="feed" aria-live="polite"></div>
+          <div class="ph-foot">
+            <div class="chips" id="chips"></div>
+            <div class="microw">
+              <button class="mic" id="micBtn" type="button" disabled aria-label="Tap to answer"></button>
+              <div class="michint" id="micHint">Saathi is talking…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashcol" aria-label="Bank dashboard">
+      <div class="dash">
+        <div class="dhead">
+          <div class="who"><span id="bankIc"></span><div><h2>Demo Bank · Kolar branch</h2><small>Branch officer view · files arrive only after the owner approves</small></div></div>
+          <span class="pill info" id="dheadPill">Saathi files</span>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Dashboard sections">
+          <button class="tab" role="tab" data-tab="cluster" type="button">Cluster</button>
+          <button class="tab" role="tab" data-tab="file" type="button">Loan file</button>
+          <button class="tab" role="tab" data-tab="trust" type="button">Model trust</button>
+          <button class="tab" role="tab" data-tab="money" type="button">Following the money</button>
+        </div>
+        <div class="dbody" id="dbody"></div>
+      </div>
+    </section>
+  </main>
+
+  <p class="foot">Saathi prepares the file; the bank decides. Scheme rules shown here are paraphrased from official guidelines for this demo and must be verified before real use. Interest rates are indicative. The readiness model runs on synthetic data.</p>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="mbox" id="mbox"></div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>Array.from(el.querySelectorAll(s));
+const fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const fmtK=v=>v>=100000?(v/100000).toFixed(v%100000===0?0:1)+'L':Math.round(v/1000)+'k';
+const pctS=x=>Math.round(x*100)+'%';
+const mean=a=>a.reduce((s,v)=>s+v,0)/(a.length||1);
+const sleepRaw=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nowStr=()=>new Date().toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+
+const ICONS={
+ mic:'<path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/>',
+ speaker:'<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+ mute:'<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9l5 6M21 9l-5 6"/>',
+ camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ x:'<path d="M6 6l12 12M18 6 6 18"/>',
+ q:'<path d="M9.5 9.5a2.5 2.5 0 0 1 4.9.6c0 1.6-2.4 2-2.4 3.4M12 17h.01"/>',
+ alert:'<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>',
+ file:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+ play:'<path d="M8 5v14l11-7z"/>',
+ restart:'<path d="M4 12a8 8 0 1 0 2.3-5.6L4 8.7"/><path d="M4 4v4.7h4.7"/>',
+ ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>',
+ bank:'<path d="M3 10h18L12 4 3 10zM5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+ auto:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+ cc:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 13h4M13 13h4M7 16h7"/>',
+ pin:'<path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ badge:'<path d="M12 2l2.4 2.2 3.2-.4.9 3.1 2.9 1.5-1 3.1 1 3.1-2.9 1.5-.9 3.1-3.2-.4L12 22l-2.4-2.2-3.2.4-.9-3.1-2.9-1.5 1-3.1-1-3.1 2.9-1.5.9-3.1 3.2.4z"/><path d="M8.8 12l2.2 2.2 4.2-4.2"/>'
+};
+const ic=(n,cls='')=>`<svg class="ic ${n==='play'?'fill':''} ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+
+const MONTHS=[['Nov','2025','ನವೆಂಬರ್','November'],['Dec','2025','ಡಿಸೆಂಬರ್','December'],['Jan','2026','ಜನವರಿ','January'],['Feb','2026','ಫೆಬ್ರವರಿ','February'],['Mar','2026','ಮಾರ್ಚ್','March'],['Apr','2026','ಏಪ್ರಿಲ್','April'],['May','2026','ಮೇ','May'],['Jun','2026','ಜೂನ್','June'],['Jul','2026','ಜುಲೈ','July'],['Aug','2026','ಆಗಸ್ಟ್','August'],['Sep','2026','ಸೆಪ್ಟೆಂಬರ್','September'],['Oct','2026','ಅಕ್ಟೋಬರ್','October']].map(([s,y,kn,full])=>({s,y,kn,full}));
+
+/* ---------- scheme sources (paraphrased) ---------- */
+const DOCSRC={
+ mudra:{title:'Pradhan Mantri MUDRA Yojana (PMMY)',url:'https://www.mudra.org.in/'},
+ pmegp:{title:'PMEGP Scheme Guidelines (KVIC)',url:'https://www.kviconline.gov.in/pmegpeportal/'},
+ standup:{title:'Stand-Up India Scheme',url:'https://www.standupmitra.in/'},
+ cgtmse:{title:'CGTMSE Credit Guarantee Scheme',url:'https://www.cgtmse.in/'}
+};
+const SRC={
+ M1:{doc:'mudra',sec:'Who can borrow',text:'Loans under PMMY are given to non-corporate, non-farm small and micro enterprises for <mark>income-generating activities in manufacturing, trading and services</mark>, including <mark>activities allied to agriculture</mark> such as dairy, poultry and fisheries.'},
+ M2:{doc:'mudra',sec:'Loan categories',text:'Loans come in four categories: <mark>Shishu up to ₹50,000; Kishore above ₹50,000 up to ₹5 lakh; Tarun above ₹5 lakh up to ₹10 lakh</mark>; and Tarun Plus above ₹10 lakh up to ₹20 lakh, only for borrowers who have taken and <mark>successfully repaid a Tarun loan</mark>.'},
+ M3:{doc:'mudra',sec:'Borrower conditions',text:'The borrower <mark>should not be a defaulter</mark> to any bank or financial institution and should have a satisfactory credit record.'},
+ M4:{doc:'mudra',sec:'Security',text:'<mark>No collateral is required</mark> for loans under PMMY. These loans are covered by the Credit Guarantee Fund for Micro Units (CGFMU).'},
+ P1:{doc:'pmegp',sec:'Eligibility',text:'Assistance is available <mark>only for new projects</mark>. Existing units, and units that have already received a government subsidy under any scheme, <mark>are not eligible</mark>.'},
+ P2:{doc:'pmegp',sec:'Eligibility',text:'Any individual <mark>above 18 years of age</mark> is eligible.'},
+ P3:{doc:'pmegp',sec:'Project cost',text:'The maximum project cost is <mark>₹50 lakh for manufacturing</mark> and <mark>₹20 lakh for business or service</mark> units.'},
+ P4:{doc:'pmegp',sec:'Education',text:'Applicants must have <mark>passed at least Class VIII</mark> for projects costing <mark>above ₹10 lakh in manufacturing</mark> or above ₹5 lakh in business or service.'},
+ P5:{doc:'pmegp',sec:'Subsidy and own contribution',text:'General category: own contribution 10%; subsidy <mark>15% urban, 25% rural</mark>. Special categories (including SC, ST, OBC, minorities, <mark>women</mark>, ex-servicemen and persons with disabilities): own contribution <mark>5%</mark>; subsidy <mark>25% urban, 35% rural</mark>. The bank finances the balance.'},
+ P6:{doc:'pmegp',sec:'Training',text:'Completing an <mark>Entrepreneurship Development Programme (EDP)</mark> is <mark>mandatory before the subsidy is released</mark>.'},
+ P7:{doc:'pmegp',sec:'Subsidy lock-in',text:'The subsidy is kept as a <mark>term deposit for three years</mark> in the beneficiary\'s name and adjusted against the loan after that, if the unit is running.'},
+ S1:{doc:'standup',sec:'Who can borrow',text:'<mark>SC/ST and/or women entrepreneurs above 18 years</mark> of age. For non-individual enterprises, at least 51% of the shareholding must be held by an SC/ST or woman entrepreneur.'},
+ S2:{doc:'standup',sec:'Greenfield only',text:'Loans are only for <mark>greenfield projects</mark>, meaning the beneficiary\'s <mark>first venture</mark> in manufacturing, services, trading or activities allied to agriculture.'},
+ S3:{doc:'standup',sec:'Loan size',text:'Composite loans <mark>between ₹10 lakh and ₹1 crore</mark>, covering term loan and working capital.'},
+ S4:{doc:'standup',sec:'Borrower conditions',text:'The borrower <mark>should not be in default</mark> to any bank or financial institution.'},
+ C1:{doc:'cgtmse',sec:'Eligible borrowers',text:'Guarantee cover is available for <mark>collateral-free credit</mark> given by eligible lenders to <mark>new and existing micro and small enterprises</mark> in <mark>manufacturing or service</mark> activity, including retail trade.'},
+ C2:{doc:'cgtmse',sec:'How cover is obtained',text:'The guarantee is <mark>applied for by the lending institution</mark>. The borrower does not apply separately.'}
+};
+
+/* ---------- personas ---------- */
+const Q={
+ biz:{kn:'ನಿಮ್ಮ ವ್ಯಾಪಾರದ ಬಗ್ಗೆ ಹೇಳಿ. ಏನು ಮಾಡ್ತೀರಿ, ಎಷ್ಟು ವರ್ಷದಿಂದ?',en:'Tell me about your work. What do you do, and for how long?'},
+ earn:{kn:'ತಿಂಗಳಿಗೆ ಸುಮಾರು ಎಷ್ಟು ಸಂಪಾದನೆ ಆಗುತ್ತೆ?',en:'Roughly how much do you earn in a month?'},
+ need:{kn:'ಸಾಲ ಯಾಕೆ ಬೇಕು? ಎಷ್ಟು ಬೇಕು?',en:'What do you need the loan for, and how much?'},
+ loans:{kn:'ಈಗ ಯಾವುದಾದರೂ ಸಾಲ ಇದೆಯಾ?',en:'Do you have any loans right now?'},
+ loansEdu:{kn:'ಈಗ ಯಾವುದಾದರೂ ಸಾಲ ಇದೆಯಾ? ಎಲ್ಲಿಯವರೆಗೆ ಓದಿದ್ದೀರಿ?',en:'Do you have any loans right now? And how far did you study?'},
+ tried:{kn:'ಮೊದಲು ಬ್ಯಾಂಕ್ ಸಾಲಕ್ಕೆ ಪ್ರಯತ್ನಿಸಿದ್ರಾ? ಎಲ್ಲಿ ನಿಂತು ಹೋಯ್ತು?',en:'Have you tried for a bank loan before? Where did it stop?'},
+ heard:{kn:'ಯಾವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಕೇಳಿದ್ದೀರಿ? ಯಾರಿಂದ?',en:'Which government schemes have you heard of, and from whom?'}
+};
+const PERSONAS={
+ lakshmamma:{id:'lakshmamma',name:'Lakshmamma B',kn:'ಲಕ್ಷ್ಮಮ್ಮ',initials:'LB',pron:'she',role:'Tailoring unit',place:'Vemgal, Kolar',branch:'Kolar',branchKn:'ಕೋಲಾರ',
+  gender:'F',category:'General',area:'rural',age:38,education:7,newVenture:false,years:4,sector:'manufacturing',agri:false,
+  activity:'Garment stitching (blouses, school uniforms)',purpose:'2 industrial sewing machines and 1 embroidery machine',
+  request:300000,projectCost:300000,tenure:36,rate:0.11,extra:12000,
+  inflow:[52000,34000,41000,44000,26000,30000,39000,55000,24000,22000,33000,58000],
+  outflow:[38000,27000,31000,33000,22000,24000,30000,40000,21000,20000,26000,42000],
+  history:26,digital:0.72,bounces:1,bounceMonth:'March 2026',informal:{amount:40000,rate:0.03},upi:{payments:214,payers:63},priorTarun:false,full:true,
+  field:[['Schemes heard of','MUDRA, from a neighbour'],['Last loan attempt','2 years ago; stopped at the document list'],['Agent','Asked ₹15,000 to "arrange" the file'],['Records she has','UPI history, passbook, order notebook']],
+  sample:{label:'Talking to Saathi',cls:'muted',shared:false},
+  intake:[
+   {q:Q.biz,a:{kn:'ನಾನು ಟೈಲರಿಂಗ್ ಮಾಡ್ತೀನಿ, ನಾಲ್ಕು ವರ್ಷದಿಂದ. ಬ್ಲೌಸ್ ಮತ್ತು ಶಾಲೆ ಯೂನಿಫಾರ್ಮ್ ಹೊಲಿಯುತ್ತೀನಿ. ಎರಡು ಮಷೀನ್ ಇದೆ.',en:'I do tailoring, for four years now. I stitch blouses and school uniforms. I have two machines.'}},
+   {q:Q.earn,a:{kn:'ಸುಮಾರು ಮೂವತ್ತೈದರಿಂದ ನಲವತ್ತು ಸಾವಿರ. ಹಬ್ಬ ಮತ್ತು ಶಾಲೆ ಶುರುವಾದಾಗ ಜಾಸ್ತಿ. ಹೆಚ್ಚಿನವರು UPI ಅಲ್ಲಿ ಕೊಡ್ತಾರೆ.',en:'About 35 to 40 thousand. More during festivals and when schools open. Most customers pay by UPI.'}},
+   {q:Q.need,a:{kn:'ಎರಡು ಇಂಡಸ್ಟ್ರಿಯಲ್ ಮಷೀನ್ ಮತ್ತು ಒಂದು ಎಂಬ್ರಾಯ್ಡರಿ ಮಷೀನ್ ಬೇಕು. ಸುಮಾರು ಮೂರು ಲಕ್ಷ. ಆರ್ಡರ್ ಬಿಟ್ಟುಬಿಡ್ತಾ ಇದ್ದೀನಿ.',en:'I need two industrial machines and one embroidery machine. About 3 lakh. I am turning orders away.'}},
+   {q:Q.loans,a:{kn:'ಬಡ್ಡಿ ವ್ಯಾಪಾರಿ ಹತ್ತಿರ ನಲವತ್ತು ಸಾವಿರ. ತಿಂಗಳಿಗೆ ನೂರಕ್ಕೆ ಮೂರು ರೂಪಾಯಿ ಬಡ್ಡಿ.',en:'₹40,000 from a moneylender. Three rupees per hundred, every month.'}},
+   {q:Q.tried,a:{kn:'ಎರಡು ವರ್ಷದ ಹಿಂದೆ. ತುಂಬಾ ಪೇಪರ್ ಕೇಳಿದರು. ಏಜೆಂಟ್ ಹದಿನೈದು ಸಾವಿರ ಕೇಳಿದ. ಬಿಟ್ಟುಬಿಟ್ಟೆ.',en:'Two years ago. They asked for too many papers. An agent wanted ₹15,000. I gave up.'}},
+   {q:Q.heard,a:{kn:'ಮುದ್ರಾ ಸಾಲ ಅಂತ ಪಕ್ಕದ ಮನೆಯವರು ಹೇಳಿದ್ರು. ಬೇರೆ ಗೊತ್ತಿಲ್ಲ.',en:'My neighbour mentioned a Mudra loan. I don\'t know any others.'}}
+  ],
+  result:{kn:'ಒಳ್ಳೆ ಸುದ್ದಿ, ಲಕ್ಷ್ಮಮ್ಮ! ನೀವು ಮುದ್ರಾ ಕಿಶೋರ್ ಸಾಲಕ್ಕೆ ಅರ್ಹರು. ಆಸ್ತಿ ಅಡವಿಡುವ ಅವಶ್ಯಕತೆ ಇಲ್ಲ. PMEGP ಮತ್ತು ಸ್ಟ್ಯಾಂಡ್-ಅಪ್ ಇಂಡಿಯಾ ಹೊಸ ವ್ಯಾಪಾರಕ್ಕೆ ಮಾತ್ರ, ಅದಕ್ಕೆ ನೀವು ಅರ್ಹರಲ್ಲ.',en:'Good news, Lakshmamma! You are eligible for a MUDRA Kishore loan. You don\'t need to pledge any property. PMEGP and Stand-Up India are only for new businesses, so they don\'t apply to you.'}
+ },
+ manjunath:{id:'manjunath',name:'Manjunath R',kn:'ಮಂಜುನಾಥ್',initials:'MR',pron:'he',role:'New fabrication unit',place:'Malur, Kolar',branch:'Malur',branchKn:'ಮಾಲೂರು',
+  gender:'M',category:'General',area:'rural',age:29,education:10,newVenture:true,years:0,sector:'manufacturing',agri:false,
+  activity:'Grill and gate fabrication (new unit)',purpose:'Welding and cutting machines, work shed, raw material',
+  projectCost:950000,tenure:84,rate:0.11,extra:40000,
+  inflow:[27000,24000,26000,28000,22000,25000,29000,26000,20000,19000,24000,31000],
+  outflow:[20000,18000,19000,20000,17000,18000,21000,19000,16000,16000,18000,22000],
+  history:30,digital:0.9,bounces:0,informal:null,upi:{payments:168,payers:41},priorTarun:false,
+  field:[['Schemes heard of','None by name; a friend said "government gives subsidy"'],['Last loan attempt','Never tried; thought he needed property'],['Agent','None'],['Records he has','UPI history for 30 months of job work']],
+  sample:{label:'Submitted',cls:'info',shared:true},
+  intake:[
+   {q:Q.biz,a:{kn:'ನಾನು ಐದು ವರ್ಷದಿಂದ ವೆಲ್ಡಿಂಗ್ ಕೆಲಸ ಮಾಡ್ತೀನಿ, ಬೇರೆಯವರ ವರ್ಕ್‌ಶಾಪ್‌ನಲ್ಲಿ ಮತ್ತು ಸ್ವಂತ ಜಾಬ್ ವರ್ಕ್. ಈಗ ನನ್ನದೇ ಗ್ರಿಲ್ ಮತ್ತು ಗೇಟ್ ಯೂನಿಟ್ ಶುರು ಮಾಡಬೇಕು.',en:'I have done welding for five years, in other workshops and my own job work. Now I want to start my own grill and gate unit.'}},
+   {q:Q.earn,a:{kn:'ಜಾಬ್ ವರ್ಕ್‌ನಿಂದ ತಿಂಗಳಿಗೆ ಸುಮಾರು ಇಪ್ಪತ್ತೈದು ಸಾವಿರ. ಎಲ್ಲಾ UPI ಅಲ್ಲಿ.',en:'About 25 thousand a month from job work. All by UPI.'}},
+   {q:Q.need,a:{kn:'ವೆಲ್ಡಿಂಗ್ ಮಷೀನ್, ಕಟಿಂಗ್ ಮಷೀನ್, ಶೆಡ್ ಮತ್ತು ಕಚ್ಚಾ ವಸ್ತು. ಒಟ್ಟು ಸುಮಾರು ಒಂಬತ್ತೂವರೆ ಲಕ್ಷ.',en:'A welding machine, a cutting machine, a shed and raw material. About 9.5 lakh in total.'}},
+   {q:Q.loansEdu,a:{kn:'ಯಾವ ಸಾಲ ಇಲ್ಲ. ನಾನು ಹತ್ತನೇ ತರಗತಿ ಪಾಸ್.',en:'No loans. I passed 10th standard.'}}
+  ],
+  result:{kn:'ಒಳ್ಳೆ ಸುದ್ದಿ, ಮಂಜುನಾಥ್! ಹೊಸ ಯೂನಿಟ್‌ಗೆ ಎರಡು ದಾರಿ ಇದೆ: PMEGP ಸಬ್ಸಿಡಿ ಜೊತೆ, ಅಥವಾ ಮುದ್ರಾ ತರುಣ್. PMEGP ಉತ್ತಮ, ಏಕೆಂದರೆ ಸರ್ಕಾರ ಸಬ್ಸಿಡಿ ಕೊಡುತ್ತೆ.',en:'Good news, Manjunath! Your new unit has two routes: PMEGP with a subsidy, or MUDRA Tarun. PMEGP is better because the government adds a subsidy.'}
+ },
+ gowramma:{id:'gowramma',name:'Gowramma S',kn:'ಗೌರಮ್ಮ',initials:'GS',pron:'she',role:'SHG member · new snack unit',place:'Mulbagal, Kolar',branch:'Mulbagal',branchKn:'ಮುಳಬಾಗಿಲು',
+  gender:'F',category:'OBC',area:'rural',age:34,education:10,newVenture:true,years:0,sector:'manufacturing',agri:false,
+  activity:'Millet snack processing (new unit)',purpose:'Pulveriser, roaster, packing machine, FSSAI registration',
+  projectCost:1200000,tenure:84,rate:0.11,extra:52000,
+  inflow:[21000,17000,18000,19000,15000,16000,18000,17000,15000,14000,17000,22000],
+  outflow:[15000,13000,13500,14000,12000,12500,13500,13000,12000,11500,13000,15500],
+  history:18,digital:0.9,bounces:0,informal:null,upi:{payments:132,payers:48},priorTarun:false,existingNote:'SHG group loan, repaid on time',
+  field:[['Schemes heard of','Stand-Up India, at an SHG federation meeting'],['Last loan attempt','Only SHG group loans so far'],['Agent','None'],['Records she has','SHG ledger, UPI history from group sales']],
+  sample:{label:'Submitted',cls:'info',shared:true},
+  intake:[
+   {q:Q.biz,a:{kn:'ನಾನು ಶ್ರೀ ಶಕ್ತಿ ಸ್ವಸಹಾಯ ಸಂಘದ ಸದಸ್ಯೆ. ಸಂಘದಲ್ಲಿ ರಾಗಿ ಚಕ್ಕುಲಿ, ಹಪ್ಪಳ ಮಾಡಿ ಮಾರ್ತೀವಿ. ಈಗ ನನ್ನದೇ ಸಿರಿಧಾನ್ಯ ತಿಂಡಿ ಯೂನಿಟ್ ಶುರು ಮಾಡಬೇಕು.',en:'I am a member of the Shree Shakti self-help group. We make and sell ragi chakkuli and papad. Now I want to start my own millet snack unit.'}},
+   {q:Q.earn,a:{kn:'ಸಂಘದ ಮಾರಾಟದಿಂದ ನನ್ನ ಪಾಲು ತಿಂಗಳಿಗೆ ಸುಮಾರು ಹದಿನೆಂಟು ಸಾವಿರ.',en:'My share from the group\'s sales is about 18 thousand a month.'}},
+   {q:Q.need,a:{kn:'ಹಿಟ್ಟಿನ ಗಿರಣಿ, ರೋಸ್ಟರ್, ಪ್ಯಾಕಿಂಗ್ ಮಷೀನ್, FSSAI ನೋಂದಣಿ. ಒಟ್ಟು ಹನ್ನೆರಡು ಲಕ್ಷ.',en:'A pulveriser, a roaster, a packing machine and FSSAI registration. 12 lakh in total.'}},
+   {q:Q.loansEdu,a:{kn:'ಸಂಘದ ಸಾಲ ಮಾತ್ರ, ಸರಿಯಾಗಿ ಕಟ್ತಾ ಇದ್ದೀನಿ. ಹತ್ತನೇ ತರಗತಿ ಪಾಸ್.',en:'Only the group loan, which I repay on time. I passed 10th standard.'}}
+  ],
+  result:{kn:'ಒಳ್ಳೆ ಸುದ್ದಿ, ಗೌರಮ್ಮ! ನಿಮ್ಮ ಹೊಸ ಯೂನಿಟ್‌ಗೆ PMEGP ಮತ್ತು ಸ್ಟ್ಯಾಂಡ್-ಅಪ್ ಇಂಡಿಯಾ ಎರಡೂ ಸಿಗುತ್ತೆ. ಮುದ್ರಾ ಹತ್ತು ಲಕ್ಷದವರೆಗೆ ಮಾತ್ರ, ನಿಮ್ಮ ಸಾಲ ಅದಕ್ಕಿಂತ ಹೆಚ್ಚು.',en:'Good news, Gowramma! Your new unit qualifies for both PMEGP and Stand-Up India. MUDRA only goes up to ₹10 lakh for first-time borrowers, and your loan is larger.'}
+ },
+ shivanna:{id:'shivanna',name:'Shivanna K',kn:'ಶಿವಣ್ಣ',initials:'SK',pron:'he',role:'Dairy unit',place:'Bangarpet, Kolar',branch:'Bangarpet',branchKn:'ಬಂಗಾರಪೇಟೆ',
+  gender:'M',category:'General',area:'rural',age:45,education:5,newVenture:false,years:7,sector:'agri-allied',agri:true,
+  activity:'Dairy (3 cows, supplies the village dairy society)',purpose:'2 more milch cows',
+  request:150000,projectCost:150000,tenure:36,rate:0.11,extra:7000,
+  inflow:[null,null,null,null,null,null,null,21000,20000,19500,21500,22000],
+  milk:[20500,21000,22000,21500,19000,18500,20000,21000,20000,19500,21500,22000],
+  outflow:[16500,16800,17000,17000,16500,16000,16500,17000,16800,16500,17000,17200],
+  history:5,digital:0.45,digitalAfter:0.85,bounces:0,informal:{amount:60000,rate:0.05},upi:{payments:22,payers:1},priorTarun:false,
+  field:[['Schemes heard of','None'],['Last loan attempt','Branch asked for 12 months of statements; account was new'],['Agent','Moneylender, at 5% a month'],['Records he has','Dairy society milk-pour records (7 years)']],
+  sample:{label:'On 90-day plan',cls:'warn',shared:false},
+  intake:[
+   {q:Q.biz,a:{kn:'ನನ್ನ ಹತ್ತಿರ ಮೂರು ಹಸು ಇದೆ. ಹಾಲು ಊರಿನ ಡೈರಿಗೆ ಹಾಕ್ತೀನಿ, ಏಳು ವರ್ಷದಿಂದ.',en:'I have three cows. I have supplied milk to the village dairy for seven years.'}},
+   {q:Q.earn,a:{kn:'ತಿಂಗಳಿಗೆ ಸುಮಾರು ಇಪ್ಪತ್ತು ಸಾವಿರ. ಡೈರಿ ಹಣ ಈಗ ಬ್ಯಾಂಕ್‌ಗೆ ಬರುತ್ತೆ, ಐದು ತಿಂಗಳ ಹಿಂದೆ ಖಾತೆ ತೆಗೆದೆ. ಮೊದಲು ನಗದು.',en:'About 20 thousand a month. Dairy payments come to the bank now; I opened the account five months ago. Before that it was cash.'}},
+   {q:Q.need,a:{kn:'ಇನ್ನೂ ಎರಡು ಹಸು ತಗೋಬೇಕು. ಒಂದೂವರೆ ಲಕ್ಷ.',en:'I want to buy two more cows. 1.5 lakh.'}},
+   {q:Q.loans,a:{kn:'ಬಡ್ಡಿ ವ್ಯಾಪಾರಿ ಹತ್ತಿರ ಅರವತ್ತು ಸಾವಿರ, ನೂರಕ್ಕೆ ಐದು ರೂಪಾಯಿ.',en:'₹60,000 from a moneylender, five rupees per hundred.'}}
+  ],
+  result:{kn:'ಶಿವಣ್ಣ, ನೀವು ಮುದ್ರಾ ಕಿಶೋರ್ ಸಾಲಕ್ಕೆ ಅರ್ಹರು. ಆದರೆ ಒಂದು ಸಮಸ್ಯೆ ಇದೆ, ಅದನ್ನು ಮುಂದೆ ಹೇಳುತ್ತೇನೆ.',en:'Shivanna, you are eligible for a MUDRA Kishore loan. But there is one problem. I will explain next.'}
+ }
+};
+const ORDER=['lakshmamma','manjunath','gowramma','shivanna'];
+
+/* ---------- state ---------- */
+const state={pid:'lakshmamma',lang:'kn',subs:true,voice:false,tab:'cluster',view:'phone',peek:false,whatIf:null,visitPlan:false,
+ started:{},consent:{},approved:{},opened:{},accepted:{},alt:{},docs:{},mismatchNote:{},bankDocs:{},audit:{},practiced:{},sanctioned:{},visit:{},keptRisk:{}};
+const cur=()=>PERSONAS[state.pid];
+function audit(pid,text){(state.audit[pid]=state.audit[pid]||[]).push({t:nowStr(),text});}
+function resetPersona(pid){['consent','approved','opened','accepted','alt','docs','mismatchNote','bankDocs','audit','practiced','sanctioned','visit','keptRisk'].forEach(k=>delete state[k][pid]);state.peek=false;state.whatIf=null;}
+
+/* ---------- finance engine ---------- */
+function emiOf(P,rate,n){const r=rate/12,f=Math.pow(1+r,n);return P*r*f/(f-1);}
+function maxPrincipal(cap,rate,n){if(cap<=0)return 0;const r=rate/12,f=Math.pow(1+r,n);return cap*(f-1)/(r*f);}
+function firstYearInterest(P,rate,n){const r=rate/12,e=emiOf(P,rate,n);let bal=P,t=0;for(let i=0;i<12&&i<n;i++){const it=bal*r;t+=it;bal-=e-it;}return t;}
+function schemeCalc(p){
+ if(!p.newVenture)return{bankLoan:p.request,own:0,subsidy:0,ownRate:0,subRate:0,special:false};
+ const special=p.gender==='F'||['SC','ST','OBC','Minority'].includes(p.category);
+ const ownRate=special?0.05:0.10;
+ const subRate=special?(p.area==='rural'?0.35:0.25):(p.area==='rural'?0.25:0.15);
+ return{bankLoan:p.projectCost*(1-ownRate),own:p.projectCost*ownRate,subsidy:p.projectCost*subRate,ownRate,subRate,special};
+}
+/* scorecard */
+const ptsHistory=h=>h<6?0:h<12?10:h<24?18:22;
+const ptsReg=(s,n)=>n<6?4:s>=0.9?18:s>=0.75?13:s>=0.6?7:2;
+const ptsDscr=d=>d>=2?22:d>=1.5?17:d>=1.25?10:d>=1?4:0;
+const ptsBounce=b=>b===0?10:b===1?6:b<=3?2:0;
+const ptsDigital=s=>s>=0.75?10:s>=0.5?6:s>=0.25?3:0;
+const ptsInformal=r=>r<=0.05?8:r<=0.10?4:0;
+const probOf=score=>1/(1+Math.exp(-(score-50)/12));
+function bandOf(score){return score>=70?{id:'ready',label:'Ready',cls:'good'}:score>=50?{id:'cond',label:'Ready with conditions',cls:'warn'}:{id:'not',label:'Not ready yet',cls:'bad'};}
+
+function analyze(p,o={}){
+ const alt=p.id==='shivanna'&&state.alt[p.id];
+ const baseIn=alt?p.milk:p.inflow;
+ const adj=1+(o.incomeAdj||0);
+ const inflow=baseIn.map(v=>v==null?null:v*adj);
+ const outflow=p.outflow;
+ const idx=inflow.map((v,i)=>v==null?-1:i).filter(i=>i>=0);
+ const n=idx.length;
+ const avgIn=mean(idx.map(i=>inflow[i])),avgOut=mean(idx.map(i=>outflow[i]));
+ const surplus=inflow.map((v,i)=>v==null?null:v-outflow[i]);
+ const avgSur=avgIn-avgOut;
+ const extraC=p.extra*0.5;
+ const caps=surplus.map(v=>v==null?null:v+extraC);
+ const leanI=idx.reduce((m,i)=>caps[i]<caps[m]?i:m,idx[0]);
+ const leanCap=caps[leanI],avgCap=avgSur+extraC;
+ const history=o.history!=null?o.history:(alt?12:p.history);
+ const tenure=o.tenure||p.tenure;
+ const sch=schemeCalc(p);
+ const request=sch.bankLoan;
+ const amount=o.amount!=null?o.amount:(state.accepted[p.id]!=null?state.accepted[p.id]:request);
+ const emi=emiOf(amount,p.rate,tenure);
+ const dscr=avgCap/emi;
+ const capLimit=Math.min(leanCap,avgCap/1.5);
+ const maxP=Math.floor(maxPrincipal(capLimit,p.rate,tenure)/10000)*10000;
+ const enough=n>=6&&history>=6;
+ let afford;
+ if(!enough)afford={status:'insufficient'};
+ else if(maxP>=amount)afford={status:'ok'};
+ else afford={status:'reduce',recommended:Math.max(0,maxP)};
+ const leanPass=enough&&leanCap>=emi;
+ const thr=0.6*avgIn;const k=idx.filter(i=>inflow[i]>=thr).length;const share=k/(n||1);
+ const digital=alt?p.digitalAfter:p.digital;
+ const informalRatio=p.informal?p.informal.amount*p.informal.rate/avgIn:0;
+ const F=[
+  {id:'history',max:22,pts:ptsHistory(history),v:history},
+  {id:'regularity',max:18,pts:ptsReg(share,n),v:{k,n}},
+  {id:'dscr',max:22,pts:ptsDscr(dscr),v:dscr},
+  {id:'bounce',max:10,pts:ptsBounce(p.bounces),v:p.bounces},
+  {id:'digital',max:10,pts:ptsDigital(digital),v:digital},
+  {id:'informal',max:8,pts:ptsInformal(informalRatio),v:informalRatio}
+ ];
+ const raw=F.reduce((s,f)=>s+f.pts,0);
+ const score=Math.round(raw/90*100);
+ const prob=probOf(score);
+ const band=bandOf(score);
+ F.forEach(f=>f.ratio=f.pts/f.max);
+ const pos=F.filter(f=>f.ratio>=0.75).sort((a,b)=>b.ratio-a.ratio||b.max-a.max);
+ const neg=F.filter(f=>f.ratio<0.75).sort((a,b)=>a.ratio-b.ratio||b.max-a.max);
+ const elig=evalSchemes(p,amount);
+ const rec=elig.find(s=>s.id==='pmegp'&&s.status==='eligible')||elig.find(s=>s.id==='mudra'&&s.status==='eligible')||elig.find(s=>s.id==='standup'&&s.status==='eligible');
+ // seasonal schedule: instalment follows monthly capacity, same yearly total
+ let seasonal=null;
+ if(enough){const w=idx.map(i=>Math.min(1.6,Math.max(0.5,caps[i]/avgCap)));const sw=mean(w);seasonal=MONTHS.map((m,i)=>{const j=idx.indexOf(i);return j<0?null:emi*w[j]/sw;});}
+ return{p,inflow,outflow,surplus,caps,idx,n,avgIn,avgOut,avgSur,extraC,leanI,leanCap,avgCap,history,tenure,request,amount,emi,dscr,maxP,afford,leanPass,share,k,digital,informalRatio,F,raw,score,prob,band,reasons:{pos,neg},elig,rec,sch,seasonal,alt};
+}
+
+function evalSchemes(p,loan){
+ const sch=schemeCalc(p);
+ const projectCost=p.newVenture?loan/(1-sch.ownRate):loan;
+ const out=[];
+ // MUDRA
+ {const c=[];let cat=null;
+  if(loan<=50000)cat='Shishu';else if(loan<=500000)cat='Kishore';else if(loan<=1000000)cat='Tarun';else if(loan<=2000000&&p.priorTarun)cat='Tarun Plus';
+  c.push({t:p.agri?'Dairy is an activity allied to agriculture, which PMMY covers':'Income-generating activity: '+p.activity,ok:true,src:'M1'});
+  c.push({t:cat?`Loan ${fmt(loan)} fits the ${cat} category`:loan>2000000?`Loan ${fmt(loan)} is above the ₹20 lakh MUDRA limit`:`Loan ${fmt(loan)} needs Tarun Plus, which requires a repaid Tarun loan`,ok:!!cat,src:'M2',simple:'Above the MUDRA limit for first-time borrowers'});
+  c.push({t:'Not a defaulter (declared by owner; bank verifies with the credit bureau)',ok:true,src:'M3'});
+  c.push({t:'No collateral required',ok:true,info:true,src:'M4'});
+  out.push({id:'mudra',name:'MUDRA'+(cat?' '+cat:''),status:cat?'eligible':'not',checks:c,cat,simpleOk:`Up to ${cat==='Kishore'?'₹5 lakh':cat==='Tarun'?'₹10 lakh':cat==='Shishu'?'₹50,000':'₹20 lakh'} · no property needed`});}
+ // PMEGP
+ {const c=[];
+  c.push({t:`Age ${p.age}, above 18`,ok:p.age>18,src:'P2',simple:'Only for applicants above 18'});
+  c.push({t:p.newVenture?'New project (first unit)':`Existing business, running ${p.years} years`,ok:p.newVenture,src:'P1',simple:'Only for new businesses'});
+  const cap=p.sector==='service'?2000000:5000000;
+  c.push({t:`Project cost ${fmt(projectCost)} within the ${fmt(cap)} limit`,ok:projectCost<=cap,src:'P3',simple:'Project is above the PMEGP limit'});
+  const need=(p.sector!=='service'&&projectCost>1000000)||(p.sector==='service'&&projectCost>500000);
+  c.push({t:need?`Class ${p.education} passed; Class VIII needed for this project size`:'Education rule not triggered (project up to ₹10 lakh)',ok:!need||p.education>=8,src:'P4',simple:'Needs Class VIII pass for this project size'});
+  const ok=c.every(x=>x.ok);
+  if(ok){c.push({t:`Subsidy ${pctS(sch.subRate)} (${p.area}, ${sch.special?'special category':'general category'}): ${fmt(projectCost*sch.subRate)}; own contribution ${pctS(sch.ownRate)}`,ok:true,info:true,src:'P5'});
+   c.push({t:'EDP training must be completed before the subsidy is released',ok:true,info:true,src:'P6'});
+   c.push({t:'Subsidy is held as a 3-year term deposit',ok:true,info:true,src:'P7'});}
+  out.push({id:'pmegp',name:'PMEGP',status:ok?'eligible':'not',checks:ok?c:c.filter(x=>!x.ok),simpleOk:`Subsidy ${fmt(projectCost*sch.subRate)} · you put in ${fmt(projectCost*sch.ownRate)}`});}
+ // Stand-Up India
+ {const c=[];
+  c.push({t:p.gender==='F'?'Woman entrepreneur':['SC','ST'].includes(p.category)?p.category+' entrepreneur':'Not a woman or SC/ST entrepreneur',ok:p.gender==='F'||['SC','ST'].includes(p.category),src:'S1',simple:'Only for women and SC/ST founders'});
+  c.push({t:p.newVenture?'Greenfield (first venture)':'Existing business, not greenfield',ok:p.newVenture,src:'S2',simple:'Only for first-time businesses'});
+  c.push({t:`Loan ${fmt(loan)} ${loan>=1000000&&loan<=10000000?'is within':'is outside'} ₹10 lakh to ₹1 crore`,ok:loan>=1000000&&loan<=10000000,src:'S3',simple:'Only for loans of ₹10 lakh to ₹1 crore'});
+  c.push({t:'Not in default (declared; bank verifies)',ok:true,src:'S4'});
+  const ok=c.every(x=>x.ok);
+  out.push({id:'standup',name:'Stand-Up India',status:ok?'eligible':'not',checks:ok?c:c.filter(x=>!x.ok),simpleOk:'Loan ₹10 lakh to ₹1 crore for women and SC/ST founders'});}
+ // CGTMSE
+ {const c=[];
+  if(p.agri)c.push({t:'Activity is agri-allied (dairy). Bank to confirm whether CGTMSE or another guarantee fund applies',ok:null,src:'C1'});
+  else c.push({t:`${p.newVenture?'New':'Existing'} micro enterprise in manufacturing`,ok:true,src:'C1'});
+  c.push({t:'The bank applies for the guarantee; the owner does not apply separately',ok:true,info:true,src:'C2'});
+  out.push({id:'cgtmse',name:'CGTMSE guarantee',status:p.agri?'check':'eligible',checks:c,simpleOk:'Bank arranges a guarantee, so no property is needed',simpleCheck:'The bank will confirm this'});}
+ return out;
+}
+
+/* reason texts */
+function rtext(f,lang,positive){
+ const v=f.v;
+ const T={
+  history:()=>({en:[`${v} months of bank history`,`Only ${v} months of bank history`],kn:[`${v} ತಿಂಗಳ ಬ್ಯಾಂಕ್ ವ್ಯವಹಾರ ಇದೆ`,`ಕೇವಲ ${v} ತಿಂಗಳ ಬ್ಯಾಂಕ್ ವ್ಯವಹಾರ ಇದೆ`]}),
+  regularity:()=>({en:[`Income came in steadily in ${v.k} of ${v.n} months`,v.n<6?'Too few months to judge how steady income is':`Income was low in ${v.n-v.k} of ${v.n} months`],kn:[`${v.n} ತಿಂಗಳಲ್ಲಿ ${v.k} ತಿಂಗಳು ಆದಾಯ ಸ್ಥಿರವಾಗಿ ಬಂದಿದೆ`,v.n<6?'ಆದಾಯದ ಸ್ಥಿರತೆ ನೋಡಲು ತಿಂಗಳುಗಳು ಸಾಲದು':`${v.n-v.k} ತಿಂಗಳು ಆದಾಯ ಕಡಿಮೆ ಇತ್ತು`]}),
+  dscr:()=>({en:[`Monthly surplus covers the instalment ${v.toFixed(1)} times`,`Instalment is tight: surplus covers it only ${v.toFixed(1)} times`],kn:[`ನಿಮ್ಮ ಉಳಿತಾಯ ಕಂತಿನ ${v.toFixed(1)} ಪಟ್ಟು ಇದೆ`,'ಕಂತು ನಿಮ್ಮ ಉಳಿತಾಯಕ್ಕೆ ಹತ್ತಿರ ಇದೆ']}),
+  bounce:()=>({en:['No bounced payments in 12 months',`${v} bounced payment${v>1?'s':''} in 12 months`],kn:['12 ತಿಂಗಳಲ್ಲಿ ಯಾವ ಪಾವತಿಯೂ ಬೌನ್ಸ್ ಆಗಿಲ್ಲ',`${v} ಪಾವತಿ ಬೌನ್ಸ್ ಆಗಿದೆ`]}),
+  digital:()=>({en:[`${pctS(v)} of income is traceable in the bank`,`Only ${pctS(v)} of income is traceable in the bank; the rest is cash`],kn:[`ಆದಾಯದ ${pctS(v)} ಬ್ಯಾಂಕ್‌ನಲ್ಲಿ ಕಾಣುತ್ತೆ`,`ಆದಾಯದ ${pctS(v)} ಮಾತ್ರ ಬ್ಯಾಂಕ್‌ನಲ್ಲಿ ಕಾಣುತ್ತೆ`]}),
+  informal:()=>({en:[v>0?'Costly informal debt is small':'No costly informal debt',`Moneylender interest takes ${pctS(v)} of monthly income`],kn:['ದುಬಾರಿ ಬಡ್ಡಿ ಸಾಲ ಕಡಿಮೆ',`ಬಡ್ಡಿ ವ್ಯಾಪಾರಿಗೆ ಆದಾಯದ ${pctS(v)} ಹೋಗುತ್ತಿದೆ`]})
+ };
+ return T[f.id]()[lang][positive?0:1];
+}
+const TIPS={
+ history:{en:'Keep all business payments coming into your bank account.',kn:'ವ್ಯಾಪಾರದ ಎಲ್ಲಾ ಹಣ ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಬರುವಂತೆ ನೋಡಿಕೊಳ್ಳಿ.'},
+ regularity:{en:'Try to spread orders through the year.',kn:'ವರ್ಷವಿಡೀ ಆರ್ಡರ್ ಬರುವಂತೆ ಪ್ರಯತ್ನಿಸಿ.'},
+ dscr:{en:'A smaller loan or a longer tenure makes the instalment safer.',kn:'ಕಡಿಮೆ ಸಾಲ ಅಥವಾ ಹೆಚ್ಚು ಅವಧಿ ಕಂತನ್ನು ಸುರಕ್ಷಿತ ಮಾಡುತ್ತೆ.'},
+ bounce:{en:'Keep a small balance before payment dates so nothing bounces.',kn:'ಪಾವತಿ ದಿನದ ಮೊದಲು ಖಾತೆಯಲ್ಲಿ ಸ್ವಲ್ಪ ಹಣ ಇಡಿ.'},
+ digital:{en:'Ask more customers to pay by UPI. It shows your real income.',kn:'ಹೆಚ್ಚು ಗ್ರಾಹಕರಿಗೆ UPI ಅಲ್ಲಿ ಕೊಡಲು ಹೇಳಿ. ಅದು ನಿಮ್ಮ ನಿಜವಾದ ಆದಾಯ ತೋರಿಸುತ್ತೆ.'},
+ informal:{en:'Reducing the moneylender loan frees money every month.',kn:'ಬಡ್ಡಿ ವ್ಯಾಪಾರಿಯ ಸಾಲ ಕಡಿಮೆ ಮಾಡಿದರೆ ಪ್ರತಿ ತಿಂಗಳು ಹಣ ಉಳಿಯುತ್ತೆ.'}
+};
+const FLABEL={history:'Bank history',regularity:'Income regularity',dscr:'Instalment cover (DSCR)',bounce:'Bounced payments',digital:'Income traceable in bank',informal:'Informal debt burden'};
+
+/* ---------- synthetic data for model trust ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function corr(x,y){const mx=mean(x),my=mean(y);let a=0,b=0,c=0;for(let i=0;i<x.length;i++){const dx=x[i]-mx,dy=y[i]-my;a+=dx*dy;b+=dx*dx;c+=dy*dy;}return a/Math.sqrt(b*c||1);}
+let SYN=null;
+function synth(){
+ if(SYN)return SYN;
+ const r=rng(2026);const nrm=()=>{let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+ const regions=['Kolar','Tumakuru','Mysuru','Ballari'];const rows=[];
+ for(let i=0;i<4000;i++){
+  const g=r()<0.5?'Women':'Men';const reg=regions[Math.floor(r()*4)];
+  const history=3+Math.floor(r()*46);const n=Math.min(history,12);const share=Math.min(1,0.45+r()*0.6);
+  const dscr=Math.exp(0.35+0.4*nrm());const u=r();const b=u<0.62?0:u<0.84?1:u<0.95?2:4;
+  const dig=Math.min(1,0.15+r()*0.9);const inf=r()<0.55?0:r()*0.25;
+  const raw=ptsHistory(history)+ptsReg(share,n)+ptsDscr(dscr)+ptsBounce(b)+ptsDigital(dig)+ptsInformal(inf);
+  const score=Math.round(raw/90*100);const p=probOf(score);const pt=Math.min(.99,Math.max(.01,p+0.03*nrm()));const y=r()<pt?1:0;
+  rows.push({g,reg,history,share,dscr,b,dig,inf,score,p,y});
+ }
+ const bins=[];for(let i=0;i<10;i++){const s=rows.filter(x=>x.p>=i/10&&x.p<(i+1)/10);if(s.length>=25)bins.push({pred:mean(s.map(x=>x.p)),obs:mean(s.map(x=>x.y)),n:s.length});}
+ const brier=mean(rows.map(x=>(x.p-x.y)**2));
+ const grp=(key,vals)=>vals.map(v=>{const s=rows.filter(x=>x[key]===v);const rep=s.filter(x=>x.y===1);return{v,n:s.length,ready:s.filter(x=>x.score>=70).length/s.length,tpr:rep.filter(x=>x.score>=70).length/rep.length};});
+ const gender=grp('g',['Women','Men']);const region=grp('reg',regions);
+ const gap=a=>({ready:(Math.max(...a.map(x=>x.ready))-Math.min(...a.map(x=>x.ready)))*100,tpr:(Math.max(...a.map(x=>x.tpr))-Math.min(...a.map(x=>x.tpr)))*100});
+ const gy=rows.map(x=>x.g==='Women'?1:0);
+ const proxies=[['Bank history',rows.map(x=>x.history)],['Income regularity',rows.map(x=>x.share)],['Instalment cover',rows.map(x=>x.dscr)],['Bounced payments',rows.map(x=>x.b)],['Income traceable',rows.map(x=>x.dig)],['Informal debt',rows.map(x=>x.inf)]].map(([k,v])=>({k,r:Math.abs(corr(v,gy))}));
+ SYN={n:rows.length,bins,brier,gender,region,gGap:gap(gender),rGap:gap(region),proxies,base:mean(rows.map(x=>x.y))};
+ return SYN;
+}
+
+/* ---------- chat engine ---------- */
+const feed=$('#feed'),chipsEl=$('#chips'),micBtn=$('#micBtn'),micHint=$('#micHint');
+const chat={run:0,micRes:null,choiceRes:null,choiceDef:null,acceptEvents:false,queue:[],autoplay:false,timers:[],otpN:0,noKnNoted:false};
+const CANCEL={};
+function guard(t){if(t!==chat.run)throw CANCEL;}
+const spd=ms=>chat.autoplay?ms*0.55:ms;
+function scrollFeed(){requestAnimationFrame(()=>{feed.scrollTop=feed.scrollHeight;});}
+function textBlock(m){
+ const kn=state.lang==='kn';const pri=kn?m.kn:m.en;const sec=kn?m.en:m.kn;
+ return `<div class="pri ${kn?'kn':''}">${pri}</div>`+(state.subs&&sec?`<div class="sub ${kn?'':'kn'}">${sec}</div>`:'');
+}
+function addEl(cls,html){const el=document.createElement('div');el.className=cls;el.innerHTML=html;feed.appendChild(el);scrollFeed();return el;}
+function addBot(m,o={}){
+ const el=document.createElement('div');el.className='msg bot';el._m=m;el._role=o.role;
+ el.innerHTML=(o.role?`<span class="role">${o.role}</span>`:'')+`<div class="tb">${textBlock(m)}</div><button class="say" type="button" aria-label="Read this message aloud">${ic('speaker')}</button>`;
+ el.querySelector('.say').addEventListener('click',()=>speak(m,true));
+ feed.appendChild(el);
+ if(o.card){const c=document.createElement('div');c.className='ccard';if(o.cardId)c.id=o.cardId;c.innerHTML=o.card;feed.appendChild(c);}
+ scrollFeed();return el;
+}
+function addCard(html,id){const c=document.createElement('div');c.className='ccard';if(id)c.id=id;c.innerHTML=html;feed.appendChild(c);scrollFeed();return c;}
+function waveHtml(){let s='';for(let i=0;i<26;i++){s+=`<i style="height:${4+Math.round(Math.abs(Math.sin(i*1.7)+Math.sin(i*.6))*7)}px"></i>`;}return s;}
+function addUserVoice(a){const el=document.createElement('div');el.className='msg user';el._m=a;el._voice=true;
+ el.innerHTML=`<div class="vn">${ic('play')}<span class="wave">${waveHtml()}</span><span class="dur">0:0${4+(a.en.length%5)}</span></div><div class="tb">${textBlock(a)}</div>`;feed.appendChild(el);scrollFeed();}
+function addUserText(label){const el=document.createElement('div');el.className='msg user';el.innerHTML=`<div class="pri">${label}</div>`;feed.appendChild(el);scrollFeed();}
+function addUserPhoto(label,cap){const el=document.createElement('div');el.className='msg user';el.style.padding='5px';
+ el.innerHTML=`<div class="photo"><div class="ph"><em>${esc(label)}</em></div><div class="cap">${ic(cap&&cap.includes('Location')?'pin':'camera')}${esc(cap||'Photo')}</div></div>`;feed.appendChild(el);scrollFeed();}
+function rerenderTexts(){$$('.msg').forEach(el=>{if(el._m){const tb=el.querySelector('.tb');if(tb)tb.innerHTML=textBlock(el._m);}});}
+
+function pickVoice(lang){try{const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith(lang==='kn'?'kn':'en-in'))||(lang==='en'?vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en')):null);}catch(e){return null;}}
+function speak(m,manual){
+ return new Promise(res=>{
+  try{
+   if(!('speechSynthesis' in window)){res();return;}
+   const synth=window.speechSynthesis;synth.cancel();
+   let lang=state.lang,text=lang==='kn'?m.kn:m.en,v=pickVoice(lang);
+   if(lang==='kn'&&!v){text=m.en;v=pickVoice('en');if(!chat.noKnNoted){chat.noKnNoted=true;micHint.innerHTML='No Kannada voice on this device, so Saathi reads the English line.';}}
+   const u=new SpeechSynthesisUtterance(text.replace(/₹/g,'rupees '));
+   if(v){u.voice=v;u.lang=v.lang;}else u.lang=lang==='kn'?'kn-IN':'en-IN';
+   let done=false;const fin=()=>{if(!done){done=true;res();}};
+   u.onend=fin;u.onerror=fin;setTimeout(fin,Math.min(16000,900+text.length*65));
+   synth.speak(u);
+  }catch(e){res();}
+ });
+}
+async function bot(m,o={}){
+ const t=chat.run;
+ const ty=addEl('typing','<i></i><i></i><i></i>');
+ await sleepRaw(spd(o.fast?260:620));ty.remove();guard(t);
+ const el=addBot(m,o);
+ if(state.voice)await speak(m);else await sleepRaw(spd(320+Math.min(900,(m.en||'').length*6)));
+ guard(t);return el;
+}
+function setMic(on,hint){micBtn.disabled=!on;micBtn.classList.toggle('live',on);micHint.innerHTML=hint||(on?'<b>Tap the mic</b> to answer. The demo plays the owner\'s recorded reply.':'Saathi is talking…');}
+async function mic(a){
+ const t=chat.run;
+ await new Promise(res=>{chat.micRes=res;setMic(true);if(chat.autoplay)chat.timers.push(setTimeout(()=>{if(chat.micRes===res){chat.micRes=null;res();}},spd(1000)));});
+ guard(t);setMic(false);
+ await recordAndShow(a,t);
+}
+async function recordAndShow(a,t){
+ const rec=addEl('rec','<i></i> Recording voice note…');
+ await sleepRaw(spd(1000));rec.remove();guard(t);
+ addUserVoice(a);await sleepRaw(spd(350));guard(t);
+}
+micBtn.addEventListener('click',()=>{if(chat.micRes){const r=chat.micRes;chat.micRes=null;r();}});
+function clearChips(){chipsEl.innerHTML='';}
+async function choose(opts,def=null,o={}){
+ const t=chat.run;
+ const id=await new Promise(res=>{
+  clearChips();chat.choiceDef=def;
+  const done=v=>{if(chat.choiceRes!==done)return;chat.choiceRes=null;chat.acceptEvents=false;clearChips();res(v);};
+  chat.choiceRes=done;chat.acceptEvents=!!o.events;
+  opts.forEach(op=>{const b=document.createElement('button');b.type='button';b.className='chip'+(/[ಀ-೿]/.test(op.label)?' kn':'');b.innerHTML=(op.icon?ic(op.icon):'')+op.label;b.addEventListener('click',()=>done(op.id));chipsEl.appendChild(b);});
+  if(!o.events)setMic(false,'Choose an option above.');else setMic(false,'Ask Saathi something, or act on the bank dashboard.');
+  if(chat.autoplay&&def)chat.timers.push(setTimeout(()=>done(def),spd(1200)));
+ });
+ guard(t);
+ if(!o.silent&&!String(id).startsWith('ev:')){const op=opts.find(x=>x.id===id);if(op)addUserText(op.label);}
+ return id;
+}
+function externalEvent(ev){
+ if(chat.acceptEvents&&chat.choiceRes){chat.choiceRes('ev:'+ev);}
+ else chat.queue.push(ev);
+}
+async function sleep(ms){const t=chat.run;await sleepRaw(spd(ms));guard(t);}
+
+/* ---------- shared lines ---------- */
+const L={
+ greet:{kn:'ನಮಸ್ಕಾರ! ನಾನು ಸಾಥಿ. ಸಾಲ ಮತ್ತು ಸರ್ಕಾರಿ ಯೋಜನೆಗಳಿಗೆ ನಿಮ್ಮ ಸಹಾಯಕ. ಯಾವ ಭಾಷೆಯಲ್ಲಿ ಮಾತಾಡೋಣ?',en:'Namaskara! I am Saathi, your helper for loans and government schemes. Which language shall we talk in?'},
+ hindi:{kn:'ಹಿಂದಿ ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತೆ. ಈ ಡೆಮೊದಲ್ಲಿ ಕನ್ನಡದಲ್ಲಿ ಮುಂದುವರಿಯುತ್ತೇನೆ.',en:'Hindi is coming soon. In this demo I will continue in Kannada.'},
+ trust:{kn:'ಮೊದಲು ಒಂದು ಮಾತು: ಸಾಥಿ ಎಂದಿಗೂ ನಿಮ್ಮಿಂದ ಹಣ, UPI PIN ಅಥವಾ ಬ್ಯಾಂಕ್ OTP ಕೇಳುವುದಿಲ್ಲ. ಯಾರಾದರೂ ಕೇಳಿದರೆ, ಅದು ಮೋಸ. ನೀವು ಹಾಕುವ ಕೋಡ್ ಒಂದೇ: ನಿಮ್ಮ ಒಪ್ಪಿಗೆ ದೃಢಪಡಿಸಲು ಸಾಥಿ ಕಳಿಸುವ ಕೋಡ್.',en:'First, one promise: Saathi will never ask you for money, your UPI PIN or your bank OTP. If anyone asks, it is a fraud. The only code you enter is the one Saathi sends to confirm your own choices.'},
+ free:{kn:'ಧನ್ಯವಾದ. ಏಜೆಂಟ್‌ಗೆ ಹಣ ಕೊಡುವ ಅವಶ್ಯಕತೆ ಇಲ್ಲ. ಈ ಸೇವೆ ನಿಮಗೆ ಉಚಿತ.',en:'Thank you. You do not need to pay any agent. This service is free for you.'},
+ consent:{kn:'ನಿಮ್ಮ ಸಾಲದ ಫೈಲ್ ಮಾಡಲು, ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಖಾತೆಯ 12 ತಿಂಗಳ ವ್ಯವಹಾರ ನೋಡಲು ನಿಮ್ಮ ಒಪ್ಪಿಗೆ ಬೇಕು. ಇದು ಈ ಫೈಲ್‌ಗೆ ಮಾತ್ರ. ನೀವು ಆರಿಸುವ ಬ್ಯಾಂಕ್ ಮಾತ್ರ ನೋಡುತ್ತೆ. ಯಾವಾಗ ಬೇಕಾದರೂ "ನನ್ನ ಮಾಹಿತಿ ಅಳಿಸಿ" ಅಂತ ಹೇಳಬಹುದು.',en:'To prepare your loan file, I need your permission to see 12 months of your bank transactions. Only for this file. Only the bank you choose will see it. You can say "delete my data" at any time.'},
+ photoRoute:{kn:'ಸರಿ, ಪಾಸ್‌ಬುಕ್ ಫೋಟೋ ಕೂಡ ಆಗುತ್ತೆ. ಈ ಡೆಮೊದಲ್ಲಿ ಬ್ಯಾಂಕ್ ಮಾಹಿತಿ ದಾರಿಯಲ್ಲಿ ಮುಂದುವರಿಯುತ್ತೇನೆ.',en:'Okay, passbook photos work too. In this demo I will continue with the bank data route.'},
+ otpConsent:{kn:'ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಬಂದ ಕೋಡ್ ದೃಢಪಡಿಸಿ.',en:'Confirm the code sent to your phone.'},
+ otpApprove:{kn:'ಕಳಿಸಲು ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಬಂದ ಕೋಡ್ ದೃಢಪಡಿಸಿ.',en:'To send, confirm the code sent to your phone.'},
+ goodChoice:{kn:'ಒಳ್ಳೆ ನಿರ್ಧಾರ. ಸಮಯಕ್ಕೆ ಕಂತು ಕಟ್ಟಿದರೆ, ಒಂದು ವರ್ಷದ ನಂತರ ಹೆಚ್ಚು ಸಾಲ ಕೇಳಬಹುದು.',en:'Good decision. If you repay on time, you can ask for more after a year.'},
+ keepRisk:{kn:'ಸರಿ, ಇದು ನಿಮ್ಮ ನಿರ್ಧಾರ. ಬ್ಯಾಂಕ್ ಸರಿಯಾದ ಕಂತು ಯೋಜನೆ ಮಾಡಲು ಈ ವಿಷಯವನ್ನು ಫೈಲ್‌ನಲ್ಲಿ ಬರೆಯುತ್ತೇನೆ.',en:'Okay, it is your decision. I will note this in your file so the bank can plan a suitable repayment schedule.'},
+ docsIntro:{kn:'ಈಗ ದಾಖಲೆಗಳು. 20 ಪೇಪರ್ ಬೇಡ. ನೀವು ಕಳಿಸಬೇಕಾದ್ದು ಕೇವಲ 4 ಫೋಟೋ. ಉಳಿದ 4 ದಾಖಲೆ ನಾನೇ ಮಾಡುತ್ತೇನೆ.',en:'Now documents. Not 20 papers. You only need to send 4 photos. I will prepare the other 4 documents myself.'},
+ blurry:{kn:'ಫೋಟೋ ಸ್ವಲ್ಪ ಮಸುಕಾಗಿದೆ. ಕಿಟಕಿ ಹತ್ತಿರ ಬೆಳಕಿನಲ್ಲಿ ಮತ್ತೆ ತೆಗೆಯಿರಿ.',en:'The photo is a little blurry. Please take it again near the window, in good light.'},
+ mismatch:{kn:'ಒಂದು ಸಮಸ್ಯೆ ಕಂಡಿತು: ಆಧಾರ್‌ನಲ್ಲಿ "ಲಕ್ಷ್ಮಮ್ಮ ಬಿ" ಇದೆ, ಪಾಸ್‌ಬುಕ್‌ನಲ್ಲಿ "ಲಕ್ಷ್ಮಿ ಬಿ" ಇದೆ. ಬ್ಯಾಂಕ್ ಇದನ್ನು ಕೇಳುತ್ತೆ. ಪರಿಹಾರ: ಬ್ಯಾಂಕ್ ಭೇಟಿಯಲ್ಲಿ ಆಧಾರ್ ತೋರಿಸಿ, ಖಾತೆಯ ಹೆಸರು ಸರಿಪಡಿಸಲು ಹೇಳಿ (KYC ಅಪ್‌ಡೇಟ್). ನಾನು ಬ್ಯಾಂಕ್‌ಗೆ ಮುಂಚೆಯೇ ಟಿಪ್ಪಣಿ ಬರೆಯುತ್ತೇನೆ.',en:'I found one problem: your Aadhaar says "LAKSHMAMMA B" but your passbook says "LAKSHMI B". The bank will ask about this. The fix: at your branch visit, show your Aadhaar and ask them to update the name on your account (a KYC update). I will add a note for the bank in advance.'},
+ docsDone:{kn:'ನಿಮ್ಮ ದಾಖಲೆಗಳು ಸಿದ್ಧ. ನಾನು ಮಾಡಿದ 4 ದಾಖಲೆಗಳು ಇಲ್ಲಿವೆ.',en:'Your documents are ready. Here are the 4 documents I prepared.'},
+ ivOffer:{kn:'ಬ್ಯಾಂಕ್ ಮ್ಯಾನೇಜರ್ ಏನು ಕೇಳ್ತಾರೆ ಅಂತ ಅಭ್ಯಾಸ ಮಾಡೋಣವಾ? ನಾನು ಮ್ಯಾನೇಜರ್ ಆಗಿ ಮಾತಾಡ್ತೀನಿ.',en:'Shall we practise what the bank manager will ask? I will play the manager.'},
+ ivDone:{kn:'ತುಂಬಾ ಚೆನ್ನಾಗಿದೆ! ನೀವು ಬ್ಯಾಂಕ್ ಭೇಟಿಗೆ ತಯಾರು. ಈ ಸಲಹೆಗಳನ್ನು ನಿಮಗಾಗಿ ಉಳಿಸಿದ್ದೇನೆ.',en:'Very good! You are ready for the bank visit. I have saved these tips for you.'},
+ change:{kn:'ಏನು ಬದಲಾಯಿಸಬೇಕು ಹೇಳಿ, ಉದಾಹರಣೆಗೆ "ಎರಡು ಲಕ್ಷ ಮಾಡಿ". ಈ ಡೆಮೊದಲ್ಲಿ ಮೊತ್ತ ಹಾಗೇ ಇರುತ್ತೆ.',en:'Tell me what to change, for example "make it 2 lakh". In this demo the amount stays as it is.'},
+ sent:{kn:'ಕಳಿಸಲಾಗಿದೆ! ಬ್ಯಾಂಕ್ ನೋಡಿದ ತಕ್ಷಣ ನಿಮಗೆ ಹೇಳುತ್ತೇನೆ.',en:'Sent! I will tell you as soon as the bank opens it.'},
+ opened:{kn:'ಬ್ಯಾಂಕ್ ನಿಮ್ಮ ಫೈಲ್ ತೆರೆಯಿತು. ಏನಾದರೂ ಬೇಕಾದರೆ ನಾನೇ ಉತ್ತರಿಸುತ್ತೇನೆ. ನಿಮ್ಮ ಸಹಾಯ ಬೇಕಾದಾಗ ಮಾತ್ರ ಕೇಳುತ್ತೇನೆ.',en:'The bank opened your file. I will answer their questions myself and only ask you when I need your help.'},
+ bankDoc:{kn:'ಬ್ಯಾಂಕ್ ನಿಮ್ಮ ಅಂಗಡಿಯ ಫೋಟೋ ಕೇಳಿದೆ, ನಾಮಫಲಕ ಕಾಣುವಂತೆ.',en:'The bank asked for a photo of your workplace with the signboard visible.'},
+ bankDocSent:{kn:'ಕಳಿಸಿದೆ. ಸ್ಥಳ ಮತ್ತು ಸಮಯ ಸೇರಿಸಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಬ್ಯಾಂಕ್‌ಗೆ ಬೇರೆ ಭೇಟಿ ಬೇಕಾಗದಿರಬಹುದು.',en:'Sent. Location and time are attached, so the bank may not need a separate field visit.'},
+ visit:{kn:'ಬ್ಯಾಂಕ್ ಭೇಟಿ: ಗುರುವಾರ 19 ನವೆಂಬರ್, ಬೆಳಿಗ್ಗೆ 10:30. ಮೂಲ ಆಧಾರ್ ತನ್ನಿ. ಒಂದೇ ಭೇಟಿ ಸಾಕು.',en:'Branch visit booked: Thursday 19 November, 10:30 am. Bring your original Aadhaar. One visit is enough.'},
+ sanction:{kn:'ಅಭಿನಂದನೆಗಳು! ನಿಮ್ಮ ಸಾಲ ಮಂಜೂರಾಗಿದೆ (ಡೆಮೊ). ಪ್ರತಿ ಕಂತಿನ 3 ದಿನ ಮೊದಲು ನಾನು ನೆನಪಿಸುತ್ತೇನೆ. ಸಮಯಕ್ಕೆ ಕಟ್ಟಿದರೆ, ಮುಂದಿನ ಸಲ ಹೆಚ್ಚು ಸಾಲ ಸಿಗಬಹುದು.',en:'Congratulations! Your loan is sanctioned (demo). I will remind you 3 days before every instalment. Paying on time can get you a bigger loan next time.'},
+ del1:{kn:'ಸಾಥಿಯಲ್ಲಿರುವ ನಿಮ್ಮ ಮಾಹಿತಿ ಅಳಿಸಬೇಕೇ? ಈಗಾಗಲೇ ಬ್ಯಾಂಕ್‌ಗೆ ಹೋದ ಅರ್ಜಿ ಬ್ಯಾಂಕ್‌ನ ನಿಯಮದಂತೆ ಅಲ್ಲೇ ಇರುತ್ತೆ.',en:'Do you want me to delete your data from Saathi? The application already with the bank stays there under the bank\'s rules.'},
+ del2:{kn:'ಆಯ್ತು. ನಿಮ್ಮ ಮಾಹಿತಿ ಅಳಿಸಲು ಕಳಿಸಲಾಗಿದೆ (ಡೆಮೊ).',en:'Done. Your data on Saathi is queued for deletion (demo).'},
+ del3:{kn:'ಸರಿ, ಏನೂ ಅಳಿಸಿಲ್ಲ.',en:'Okay, nothing was deleted.'}
+};
+const IV=[
+ {q:{kn:'ಈ ಸಾಲ ಯಾಕೆ ಬೇಕು?',en:'Why do you need this loan?'},a:{kn:'ಹೊಸ ಮಷೀನ್ ತಗೊಂಡು ಹೆಚ್ಚು ಆರ್ಡರ್ ತಗೋಬಹುದು.',en:'With new machines I can take more orders.'},fb:{kn:'ಚೆನ್ನಾಗಿದೆ! ಒಂದು ಸಂಖ್ಯೆ ಸೇರಿಸಿ: "ಕಳೆದ ಜೂನ್‌ನಲ್ಲಿ 40 ಯೂನಿಫಾರ್ಮ್ ಆರ್ಡರ್ ಬಿಟ್ಟೆ" ಅಂತ ಹೇಳಿ. ಮ್ಯಾನೇಜರ್‌ಗೆ ಸಂಖ್ಯೆ ಇಷ್ಟ.',en:'Good! Add a number: say "Last June I turned away 40 uniform orders." Managers like numbers.'}},
+ {q:{kn:'ಕಡಿಮೆ ಸಂಪಾದನೆಯ ತಿಂಗಳಲ್ಲಿ ಕಂತು ಹೇಗೆ ಕಟ್ಟುತ್ತೀರಿ?',en:'How will you pay the instalment in slow months?'},a:{kn:'ಹೇಗಾದರೂ ಕಟ್ಟುತ್ತೀನಿ.',en:'I will manage somehow.'},fb:{kn:'ಇದನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಹೇಳಿ: "ಅಕ್ಟೋಬರ್-ನವೆಂಬರ್ ಹಬ್ಬದ ಸಮಯದಲ್ಲಿ ಪ್ರತಿ ತಿಂಗಳು ₹5,000 ಉಳಿಸಿ ಆಗಸ್ಟ್‌ಗೆ ಇಡುತ್ತೀನಿ." ನಿಮ್ಮ UPI ದಾಖಲೆ ಇದನ್ನು ತೋರಿಸುತ್ತೆ.',en:'Say it clearly: "In the Oct–Nov festival season I save ₹5,000 a month to cover August." Your UPI record backs this up.'}},
+ {q:{kn:'ಬೇರೆ ಯಾವುದಾದರೂ ಸಾಲ ಇದೆಯಾ?',en:'Do you have any other loans?'},a:{kn:'ಇಲ್ಲ.',en:'No.'},fb:{kn:'ನಿಜ ಹೇಳುವುದು ಮುಖ್ಯ. ಬಡ್ಡಿ ವ್ಯಾಪಾರಿಯ ₹40,000 ಸಾಲದ ಬಗ್ಗೆ ಹೇಳಿ. ಮುಚ್ಚಿಟ್ಟರೆ ಬ್ಯಾಂಕ್‌ನ ನಂಬಿಕೆ ಕಳೆದುಹೋಗಬಹುದು.',en:'Honesty matters. Mention the ₹40,000 moneylender loan. Hiding it can cost you the bank\'s trust.'}}
+];
+const DOCS=[{id:'aadhaar',en:'Aadhaar card',kn:'ಆಧಾರ್ ಕಾರ್ಡ್'},{id:'pan',en:'PAN card',kn:'ಪ್ಯಾನ್ ಕಾರ್ಡ್'},{id:'passbook',en:'Bank passbook, first page',kn:'ಬ್ಯಾಂಕ್ ಪಾಸ್‌ಬುಕ್ ಮೊದಲ ಪುಟ'},{id:'quote',en:'Machine quotation from the shop',kn:'ಮಷೀನ್ ಅಂಗಡಿಯ ಕೊಟೇಶನ್'}];
+const GEN=[{id:'report',en:'Project report'},{id:'cash',en:'Cash-flow statement (12 months, from UPI)'},{id:'form',en:'Application form, pre-filled'},{id:'income',en:'Income summary'}];
+
+/* ---------- chat cards ---------- */
+const stIcon=s=>s===true||s==='ok'?`<span class="st ok">${ic('check')}</span>`:s===false||s==='no'?`<span class="st no">${ic('x')}</span>`:s==='wait'?`<span class="st wait">${ic('clock')}</span>`:`<span class="st chk">${ic(s==='flag'||s==='blur'?'alert':'q')}</span>`;
+function consentCard(p){return `<div class="ctitle">${ic('shield')} Your consent</div><dl class="kv"><dt>What</dt><dd>Bank transactions, last 12 months</dd><dt>Why</dt><dd>Only to prepare this loan file</dd><dt>Who sees it</dt><dd>You, and Demo Bank, ${p.branch} branch</dd><dt>How long</dt><dd>90 days, then deleted</dd><dt>How</dt><dd>Account Aggregator (RBI-regulated). Sandbox in this demo.</dd></dl><div class="fine">Say "delete my data" any time to withdraw.</div>`;}
+function fetchSummary(p,a){
+ const src=p.id==='shivanna'?`Account opened June 2026 · weekly dairy society payments`:`${p.upi.payments} UPI payments from ${p.upi.payers} customers`;
+ return `<div class="ctitle">${ic('bank')} Bank data received</div><dl class="kv"><dt>Months</dt><dd>${a.n} (${MONTHS[a.idx[0]].s} ${MONTHS[a.idx[0]].y} – Oct 2026)</dd><dt>Payments</dt><dd>${src}</dd><dt>Average in</dt><dd>${fmt(a.avgIn)} a month</dd></dl><div class="fine">Sample data through an Account Aggregator sandbox.</div>`;
+}
+function schemesCard(p,a){
+ const rows=a.elig.map(s=>{const st=s.status==='eligible'?'ok':s.status==='check'?'chk':'no';const first=s.checks.find(c=>c.ok===false);const line=s.status==='eligible'?s.simpleOk:s.status==='check'?s.simpleCheck:(first&&first.simple)||'Not eligible';const src=(first||s.checks[0]).src;
+  return `<div class="srow">${stIcon(st==='ok'?true:st==='no'?false:'chk')}<div><b>${s.name}</b><span>${line}</span></div><button class="linkbtn" type="button" data-src="${src}">Rule ${ic('file')}</button></div>`;}).join('');
+ return `<div class="ctitle">${ic('badge')} Schemes checked for you</div>${rows}<div class="fine">Every answer links to the government rule it comes from.</div>`;
+}
+function costLine(p,a){
+ const mr=p.informal?p.informal.rate:0.03;const ml=a.amount*mr*12;const bk=firstYearInterest(a.amount,p.rate,a.tenure);
+ return{kn:`ಹೋಲಿಕೆ: ಬಡ್ಡಿ ವ್ಯಾಪಾರಿಯಿಂದ ${fmt(a.amount)} ತೆಗೆದುಕೊಂಡರೆ ವರ್ಷಕ್ಕೆ ಸುಮಾರು ${fmt(ml)} ಬಡ್ಡಿ. ಈ ಸಾಲದಲ್ಲಿ ಮೊದಲ ವರ್ಷ ಸುಮಾರು ${fmt(bk)}.`,en:`Compare: borrowing ${fmt(a.amount)} from a moneylender at ${Math.round(mr*100)}% a month costs about ${fmt(ml)} in interest a year. This loan costs about ${fmt(bk)} in the first year.`};
+}
+function costCard(p,a){
+ const mr=p.informal?p.informal.rate:0.03;const ml=a.amount*mr*12;const bk=firstYearInterest(a.amount,p.rate,a.tenure);
+ return `<div class="ctitle">${ic('alert')} Interest in one year on ${fmt(a.amount)}</div><div class="mini-bars"><div class="mb"><span>Moneylender</span><span class="tr"><i style="width:100%;background:var(--bad)"></i></span><b class="num">${fmt(ml)}</b></div><div class="mb"><span>Bank loan</span><span class="tr"><i style="width:${Math.max(4,bk/ml*100).toFixed(0)}%;background:var(--good)"></i></span><b class="num">${fmt(bk)}</b></div></div><div class="fine">Bank rate shown is an indicative 11% a year; the actual rate depends on the bank. Moneylender at ${Math.round(mr*100)}% a month${p.informal?'':' (typical)'}.</div>`;
+}
+function reasonsLine(a){
+ const pos=a.reasons.pos.slice(0,2),neg=a.reasons.neg.slice(0,1);
+ const kn=(pos.length?`ನಿಮ್ಮ ಫೈಲ್‌ನ ಶಕ್ತಿ: ${pos.map(f=>rtext(f,'kn',true)).join('; ')}. `:'')+(neg.length?`ಸುಧಾರಿಸಬಹುದಾದ್ದು: ${rtext(neg[0],'kn',false)}. ${TIPS[neg[0].id].kn}`:'');
+ const en=(pos.length?`Your file's strengths: ${pos.map(f=>rtext(f,'en',true).toLowerCase()).join('; ')}. `:'')+(neg.length?`To improve: ${rtext(neg[0],'en',false).toLowerCase()}. ${TIPS[neg[0].id].en}`:'');
+ return{kn,en};
+}
+function affordChartSvg(a,lines){
+ const W=340,H=150,Lp=34,R=6,T=10,B=22,iw=W-Lp-R,ih=H-T-B;
+ const vals=a.idx.map(i=>a.caps[i]).concat(lines.map(l=>l.v));const max=Math.max(...vals)*1.12;const y=v=>T+ih-Math.max(0,v)/max*ih;const bw=iw/12;
+ let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly money available for an instalment, with instalment lines">`;
+ [0,0.5,1].forEach(f=>{const v=max*f;s+=`<line class="c-grid" x1="${Lp}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="c-lab" x="${Lp-4}" y="${y(v)+4}" text-anchor="end">${fmtK(v)}</text>`;});
+ MONTHS.forEach((m,i)=>{const x=Lp+i*bw;const c=a.caps[i];if(c!=null){if(i===a.leanI)s+=`<rect class="c-lean" x="${x}" y="${T}" width="${bw}" height="${ih}"/>`;s+=`<rect class="c-cap" x="${x+bw*.18}" y="${y(c)}" width="${bw*.64}" height="${T+ih-y(c)}" rx="2"/>`;}s+=`<text class="c-lab" x="${x+bw/2}" y="${H-6}" text-anchor="middle">${m.s[0]}</text>`;});
+ lines.forEach(l=>{s+=`<line class="${l.cls}" x1="${Lp}" x2="${W-R}" y1="${y(l.v)}" y2="${y(l.v)}"/>`;});
+ return s+'</svg>';
+}
+function affordCard(p,a,rec){
+ const lines=[{v:a.emi,cls:rec?'c-emi-bad':'c-emi-good'}];if(rec)lines.push({v:emiOf(rec,p.rate,a.tenure),cls:'c-emi-good'});
+ return `<div class="ctitle">${ic('shield')} Can you pay every month?</div>${affordChartSvg(a,lines)}<div class="legend"><span><i style="background:var(--primary)"></i>Money left each month</span>${rec?`<span><i style="background:var(--bad)"></i>EMI on ${fmt(a.amount)}</span><span><i style="background:var(--good)"></i>EMI on ${fmt(rec)}</span>`:`<span><i style="background:var(--good)"></i>EMI on ${fmt(a.amount)}</span>`}</div><div class="fine">Counts only half of the extra income you expect (${fmt(p.extra)} a month), to stay safe. Highlighted month: ${MONTHS[a.leanI].full}, your slowest.</div>`;
+}
+function subsidyCard(p){
+ const s=schemeCalc(p);
+ return `<div class="ctitle">${ic('badge')} PMEGP for your new unit</div><dl class="kv"><dt>Project cost</dt><dd class="num">${fmt(p.projectCost)}</dd><dt>You put in (${pctS(s.ownRate)})</dt><dd class="num">${fmt(s.own)}</dd><dt>Bank loan</dt><dd class="num">${fmt(s.bankLoan)}</dd><dt>Govt subsidy (${pctS(s.subRate)})</dt><dd class="num" style="color:var(--good)">${fmt(s.subsidy)}</dd></dl>
+ <div class="subhead">Before the subsidy is released</div><div class="doclist"><div class="docrow">${stIcon('wait')} EDP training, which Saathi will book and remind you about <button class="linkbtn" type="button" data-src="P6">Rule</button></div><div class="docrow">${stIcon('wait')} Subsidy held as a 3-year deposit <button class="linkbtn" type="button" data-src="P7">Rule</button></div></div>
+ ${p.id==='gowramma'?`<div class="subhead">Second option</div><div class="docrow">${stIcon(true)} Stand-Up India: ₹10 lakh to ₹1 crore for women founders, no subsidy <button class="linkbtn" type="button" data-src="S1">Rule</button></div>`:''}`;
+}
+function planCard(){
+ return `<div class="ctitle">${ic('clock')} Your 90-day plan</div><ol class="steps"><li><b>This week</b><span>Get a 12-month milk supply statement from your dairy society. I will tell you exactly what to ask for.</span></li><li><b>Every week</b><span>Keep dairy payments going into your bank account.</span></li><li><b>This month</b><span>Your moneylender takes about ₹3,000 interest a month. Try to pay it down.</span></li><li><b>10 Feb 2027</b><span>I will check your file again automatically.</span></li></ol>`;
+}
+function docsCardHtml(p){
+ const d=state.docs[p.id]||{};
+ const rows=DOCS.map(x=>`<div class="docrow">${stIcon(d[x.id]||'wait')} <span>${x.en}${d[x.id]==='flag'?' · name differs':d[x.id]==='blur'?' · retake needed':''}</span></div>`).join('');
+ const gen=GEN.map(x=>`<div class="docrow">${stIcon(state.mismatchNote[p.id]?true:'wait')} <span>${x.en}</span></div>`).join('');
+ return `<div class="ctitle">${ic('file')} Your document list</div><div class="subhead">You send 4 photos</div><div class="doclist">${rows}</div><div class="subhead">Saathi prepares 4</div><div class="doclist">${gen}</div>`;
+}
+function updateDocsCard(p){const el=document.getElementById('docsCard');if(el)el.innerHTML=docsCardHtml(p);}
+function genDocsCard(){return `<div class="ctitle">${ic('file')} Prepared by Saathi</div><div class="doclist">${GEN.map(g=>`<div class="docrow">${stIcon(true)} <span style="flex:1">${g.en}</span>${g.id==='report'||g.id==='cash'?`<button class="linkbtn" type="button" data-doc="${g.id}">Preview</button>`:''}</div>`).join('')}</div>`;}
+function summaryCard(p,a){
+ const amt=state.accepted[p.id];const sch=a.rec?a.rec.name:'MUDRA';
+ return `<div class="ctitle">${ic('file')} Your application</div><dl class="kv"><dt>Loan</dt><dd class="num">${fmt(amt)}</dd><dt>Scheme</dt><dd>${sch}</dd><dt>Months</dt><dd>${a.tenure}</dd><dt>Instalment</dt><dd class="num">about ${fmt(emiOf(amt,p.rate,a.tenure))}</dd><dt>Bank</dt><dd>Demo Bank, ${p.branch} branch</dd><dt>Documents</dt><dd>${p.full?'8 ready, 1 note for the bank':'Collected in the full flow'}</dd></dl><div class="fine">Nothing is sent without your "yes" and the code.</div>`;
+}
+
+/* ---------- story ---------- */
+async function otp(line){
+ const t=chat.run;const id='otp'+(++chat.otpN);
+ await bot(line,{card:`<div class="otp"><div class="otp-boxes"><span></span><span></span><span></span><span></span></div><div class="otp-note">Demo code fills in automatically</div></div>`,cardId:id,fast:true});
+ const box=document.getElementById(id);const sp=box.querySelectorAll('.otp-boxes span');
+ for(let i=0;i<4;i++){await sleepRaw(spd(200));guard(t);sp[i].textContent='4821'[i];}
+ await choose([{id:'ok',label:'Confirm code'}],'ok',{silent:true});
+ box.querySelector('.otp').classList.add('done');box.querySelector('.otp-note').innerHTML=ic('check')+' Code confirmed';
+}
+async function fetchData(p){
+ const t=chat.run;
+ const el=addCard(`<div class="ctitle">${ic('bank')} Fetching bank data through Account Aggregator <span class="tag">sandbox</span></div><div class="bar"><i></i></div>`);
+ await sleepRaw(spd(1400));guard(t);
+ const a=analyze(p);el.innerHTML=fetchSummary(p,a);scrollFeed();
+ await bot({kn:`ನಿಮ್ಮ ${a.n} ತಿಂಗಳ ವ್ಯವಹಾರ ಸಿಕ್ಕಿತು. ತಿಂಗಳಿಗೆ ಸರಾಸರಿ ${fmt(a.avgIn)} ಬರುತ್ತೆ.`,en:`I have your last ${a.n} months of transactions. On average ${fmt(a.avgIn)} comes in each month.`});
+}
+async function affordStep(p,a){
+ const req=a.amount;
+ if(a.afford.status==='reduce'){
+  const rec=a.afford.recommended;const emiRec=emiOf(rec,p.rate,a.tenure);const m=MONTHS[a.leanI];
+  await bot({kn:`ಒಂದು ಎಚ್ಚರಿಕೆ: ${m.kn} ತಿಂಗಳಲ್ಲಿ ನಿಮ್ಮ ಸಂಪಾದನೆ ಕಡಿಮೆ ಆಗುತ್ತೆ. ${fmt(req)} ಸಾಲದ ಕಂತು ${fmt(a.emi)}, ಅದು ಆಗ ಕಷ್ಟ. ${fmt(rec)} ತೆಗೆದುಕೊಂಡರೆ ಕಂತು ${fmt(emiRec)}. ಅದು ಸುರಕ್ಷಿತ.`,en:`One caution: your income drops in ${m.full}. The instalment on ${fmt(req)} would be ${fmt(a.emi)}, which is hard that month. With ${fmt(rec)} it is ${fmt(emiRec)}. That is safer.`},{card:affordCard(p,a,rec)});
+  const ch=await choose([{id:'rec',label:`OK, take ${fmt(rec)}`},{id:'keep',label:`No, I still want ${fmt(req)}`}],'rec');
+  if(ch==='rec'){state.accepted[p.id]=rec;audit(p.id,`Owner chose the safer amount ${fmt(rec)} (asked for ${fmt(req)})`);await bot(L.goodChoice);}
+  else{state.accepted[p.id]=req;state.keptRisk[p.id]=true;audit(p.id,`Owner kept ${fmt(req)} after the affordability warning`);await bot(L.keepRisk);}
+ }else{
+  state.accepted[p.id]=req;
+  await bot({kn:`ನೀವು ಕೇಳಿದ ${fmt(req)} ನಿಮ್ಮ ಆದಾಯಕ್ಕೆ ಸರಿ ಹೊಂದುತ್ತೆ. ಕಂತು ಸುಮಾರು ${fmt(a.emi)}, ಕಡಿಮೆ ಸಂಪಾದನೆಯ ತಿಂಗಳಲ್ಲೂ ಕಟ್ಟಬಹುದು.`,en:`The ${fmt(req)} loan fits your income. The instalment is about ${fmt(a.emi)}, payable even in your slowest month.`},{card:affordCard(p,a,null)});
+ }
+ renderDash();
+}
+async function shivannaPlan(p){
+ await bot({kn:'ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಖಾತೆಯಲ್ಲಿ ಕೇವಲ 5 ತಿಂಗಳ ವ್ಯವಹಾರ ಇದೆ. ಬ್ಯಾಂಕ್‌ಗಳು ಸಾಮಾನ್ಯವಾಗಿ 6 ರಿಂದ 12 ತಿಂಗಳ ದಾಖಲೆ ನೋಡುತ್ತವೆ. ಈಗ ಅರ್ಜಿ ಹಾಕಿದರೆ ನಿಂತು ಹೋಗಬಹುದು. ಆದರೆ ಸುಲಭ ದಾರಿ ಇದೆ: ನಿಮ್ಮ ಡೈರಿ ಸಂಘದಿಂದ 12 ತಿಂಗಳ ಹಾಲಿನ ಲೆಕ್ಕದ ಪತ್ರ ತನ್ನಿ. ಅದು ನಿಮ್ಮ ಆದಾಯದ ಸಾಕ್ಷಿ.',en:'Your bank account shows only 5 months of transactions. Banks usually look for 6 to 12 months. If we apply now, the file may stall. But there is an easy way: get a 12-month milk supply statement from your dairy society. It proves your income.'},{card:planCard()});
+ await choose([{id:'sim',label:'Week 1: he brings the dairy statement',icon:'camera'}],'sim',{silent:true});
+ addUserPhoto('Dairy society milk statement','12 months of milk supply');
+ const before=analyze(p).score;state.alt[p.id]=true;audit(p.id,'Dairy society milk statement added (12 months, other evidence of income)');const a2=analyze(p);
+ const sum=p.milk.reduce((s,v)=>s+v,0);renderDash();
+ await bot({kn:`ಪತ್ರ ಸಿಕ್ಕಿತು: 12 ತಿಂಗಳು, ಒಟ್ಟು ${fmt(sum)} ಹಾಲಿನ ಹಣ. ನಿಮ್ಮ ಫೈಲ್ ಈಗ ಸಿದ್ಧ! ತಯಾರಿ ಅಂಕ ${before} ರಿಂದ ${a2.score}ಕ್ಕೆ ಏರಿತು.`,en:`Statement received: 12 months, ${fmt(sum)} in milk payments. Your file is now ready! Readiness rose from ${before} to ${a2.score}.`});
+}
+async function subsidyStep(p){
+ const s=schemeCalc(p);
+ const m=p.id==='manjunath'
+  ?{kn:`PMEGP ಅಡಿ ಸರ್ಕಾರ ${fmt(s.subsidy)} ಸಬ್ಸಿಡಿ ಕೊಡುತ್ತೆ. ನೀವು ಹಾಕಬೇಕಾದ್ದು ${fmt(s.own)} ಮಾತ್ರ. ಸಬ್ಸಿಡಿಗೆ ಮೊದಲು EDP ತರಬೇತಿ ಮುಗಿಸಬೇಕು, ನಾನು ನೆನಪಿಸುತ್ತೇನೆ.`,en:`Under PMEGP the government adds a ${fmt(s.subsidy)} subsidy. You only put in ${fmt(s.own)}. You must finish EDP training before the subsidy is released. I will remind you.`}
+  :{kn:`PMEGP ಅಡಿ ನಿಮಗೆ ${fmt(s.subsidy)} ಸಬ್ಸಿಡಿ, ಮಹಿಳೆಯರಿಗೆ ಹೆಚ್ಚು ದರ. ನೀವು ಹಾಕಬೇಕಾದ್ದು ${fmt(s.own)} ಮಾತ್ರ. ಸ್ಟ್ಯಾಂಡ್-ಅಪ್ ಇಂಡಿಯಾ ಎರಡನೇ ದಾರಿ. ಯಾವ ಯೋಜನೆ ಎಂದು ಬ್ಯಾಂಕ್ ನಿರ್ಧರಿಸುತ್ತೆ.`,en:`Under PMEGP you get a ${fmt(s.subsidy)} subsidy, at the higher rate for women. You only put in ${fmt(s.own)}. Stand-Up India is your second option. The bank makes the final choice of scheme.`};
+ await bot(m,{card:subsidyCard(p)});
+}
+async function docsStep(p){
+ state.docs[p.id]={aadhaar:'wait',pan:'wait',passbook:'wait',quote:'wait'};
+ await bot(L.docsIntro,{card:docsCardHtml(p),cardId:'docsCard'});
+ for(const d of DOCS){
+  await bot({kn:`${d.kn} ಫೋಟೋ ಕಳಿಸಿ.`,en:`Send a photo of your ${d.en.charAt(0).toLowerCase()+d.en.slice(1)}.`},{fast:true});
+  await choose([{id:'cam',label:'Take photo',icon:'camera'}],'cam',{silent:true});
+  addUserPhoto(d.en,'Photo');
+  if(d.id==='aadhaar'){state.docs[p.id][d.id]='blur';updateDocsCard(p);await bot(L.blurry,{fast:true});await choose([{id:'cam',label:'Take photo again',icon:'camera'}],'cam',{silent:true});addUserPhoto(d.en,'Photo, retaken');}
+  state.docs[p.id][d.id]='ok';updateDocsCard(p);
+ }
+ state.docs[p.id].passbook='flag';updateDocsCard(p);
+ await bot(L.mismatch);
+ await choose([{id:'note',label:'OK, add the note for the bank'}],'note');
+ state.mismatchNote[p.id]=true;updateDocsCard(p);audit(p.id,'Name difference (Aadhaar vs passbook) explained; note added for the bank');
+ await bot(L.docsDone,{card:genDocsCard()});
+}
+async function interviewStep(p){
+ await bot(L.ivOffer);
+ const go=await choose([{id:'yes',label:'Yes, let\'s practise'},{id:'skip',label:'Skip'}],'yes');
+ if(go==='skip')return;
+ for(const q of IV){await bot(q.q,{role:'Practice · Bank manager'});await mic(q.a);await bot(q.fb,{role:'Saathi coach'});}
+ state.practiced[p.id]=true;audit(p.id,'Completed practice interview (3 questions)');
+ await bot(L.ivDone,{card:`<div class="ctitle">${ic('check')} Practice done: 3 of 3</div><ol class="listplain"><li>Say a number: 40 uniform orders turned away last June</li><li>Explain the August plan: save ₹5,000 a month in festival season</li><li>Mention the ₹40,000 moneylender loan</li></ol>`});
+}
+async function approveStep(p){
+ const a=analyze(p);const amt=state.accepted[p.id];const e=emiOf(amt,p.rate,a.tenure);const sch=a.rec?a.rec.name:'MUDRA';
+ const schKn=sch.replace('MUDRA Kishore','ಮುದ್ರಾ ಕಿಶೋರ್').replace('MUDRA Tarun','ಮುದ್ರಾ ತರುಣ್');
+ await bot({kn:`ಕಳಿಸುವ ಮೊದಲು ಓದಿ ಹೇಳುತ್ತೇನೆ: ${schKn} ಸಾಲ ${fmt(amt)}, ${a.tenure} ತಿಂಗಳು, ಕಂತು ಸುಮಾರು ${fmt(e)}, ಡೆಮೊ ಬ್ಯಾಂಕ್ ${p.branchKn} ಶಾಖೆಗೆ. ಕಳಿಸಲು "ಹೌದು" ಎನ್ನಿ. ನಿಮ್ಮ ಒಪ್ಪಿಗೆ ಇಲ್ಲದೆ ಏನೂ ಹೋಗುವುದಿಲ್ಲ.`,en:`Before sending, let me read it back: ${sch} loan of ${fmt(amt)}, for ${a.tenure} months, instalment about ${fmt(e)}, to Demo Bank, ${p.branch} branch. Say "yes" to send. Nothing goes without your yes.`},{card:summaryCard(p,a)});
+ let c=await choose([{id:'yes',label:'Say "Yes, send it"',icon:'mic'},{id:'change',label:'Change something'}],'yes',{silent:true});
+ if(c==='change'){addUserText('Change something');await bot(L.change);await choose([{id:'yes',label:'Say "Yes, send it"',icon:'mic'}],'yes',{silent:true});}
+ await recordAndShow({kn:'ಹೌದು, ಕಳಿಸಿ.',en:'Yes, send it.'},chat.run);
+ await otp(L.otpApprove);
+ state.approved[p.id]=nowStr();audit(p.id,'Owner heard the full application and approved it (voice "yes" + code)');renderDash();flashBank();
+ await bot(L.sent);
+ await sleep(1500);state.opened[p.id]=nowStr();audit(p.id,'Bank opened the file');renderDash();
+ await bot(L.opened);
+}
+async function postLoop(p){
+ while(true){
+  let ev=chat.queue.shift();
+  if(!ev){ev=await choose([{id:'agree',label:'What did I agree to?'},{id:'track',label:'Where is my file?'},{id:'delete',label:'Delete my data'}],null,{events:true});}
+  else ev='ev:'+ev;
+  if(ev==='agree'){
+   await bot({kn:`ನೀವು ಒಪ್ಪಿದ್ದು: 12 ತಿಂಗಳ ಬ್ಯಾಂಕ್ ವ್ಯವಹಾರ ನೋಡಲು, ಈ ಸಾಲದ ಫೈಲ್‌ಗಾಗಿ ಮಾತ್ರ. ಡೆಮೊ ಬ್ಯಾಂಕ್ ${p.branchKn} ಶಾಖೆ ಮಾತ್ರ ನೋಡುತ್ತೆ. 90 ದಿನಗಳ ನಂತರ ಅಳಿಸಲಾಗುತ್ತೆ. ನೀವು ಒಪ್ಪಿದ ಸಮಯ: ${state.consent[p.id]}.`,en:`You agreed to: Saathi seeing 12 months of bank transactions, only for this loan file. Only Demo Bank, ${p.branch} branch, sees it. It is deleted after 90 days. You agreed on ${state.consent[p.id]}.`});
+  }else if(ev==='track'){
+   const items=[['Sent to bank',state.approved[p.id]],['Bank opened the file',state.opened[p.id]],['Bank asked for a photo',state.bankDocs[p.id]&&state.bankDocs[p.id].t],['Branch visit booked',state.visit[p.id]],['Loan sanctioned',state.sanctioned[p.id]]];
+   await bot({kn:'ನಿಮ್ಮ ಫೈಲ್ ಎಲ್ಲಿದೆ ಎಂದು ಇಲ್ಲಿದೆ.',en:'Here is where your file is.'},{card:`<div class="ctitle">${ic('clock')} Your file</div><div class="doclist">${items.map(([l,v])=>`<div class="docrow">${stIcon(v?true:'wait')} <span style="flex:1">${l}</span><small class="num" style="color:var(--muted)">${v||''}</small></div>`).join('')}</div>`});
+  }else if(ev==='delete'){
+   await bot(L.del1);const d=await choose([{id:'y',label:'Yes, delete'},{id:'n',label:'No, keep it'}]);
+   if(d==='y'){audit(p.id,'Owner asked Saathi to delete their data');await bot(L.del2);}else await bot(L.del3);
+  }else if(ev==='ev:doc'){
+   await bot(L.bankDoc);await choose([{id:'cam',label:'Take photo',icon:'camera'}],'cam',{silent:true});
+   addUserPhoto('Workplace with signboard','Location and time attached');state.bankDocs[p.id]={t:nowStr()};audit(p.id,'Owner sent the workplace photo the bank asked for (location and time attached)');renderDash();
+   await bot(L.bankDocSent);
+  }else if(ev==='ev:visit'){state.visit[p.id]='Thu 19 Nov, 10:30';audit(p.id,'Branch visit booked for Thu 19 Nov, 10:30');renderDash();await bot(L.visit);}
+  else if(ev==='ev:sanction'){state.sanctioned[p.id]=nowStr();audit(p.id,'Bank marked the loan as sanctioned (demo)');renderDash();await bot(L.sanction);
+   if(p.newVenture)await bot({kn:'ನೆನಪು: ಸಬ್ಸಿಡಿಗಾಗಿ EDP ತರಬೇತಿ. ನಿಮಗಾಗಿ ಮುಂದಿನ ಬ್ಯಾಚ್ ಹುಡುಕುತ್ತೇನೆ.',en:'Reminder: EDP training for the subsidy. I will find the next batch for you.'});}
+ }
+}
+async function story(){
+ const p=cur();
+ addEl('daychip','Today');
+ await bot(L.greet);
+ const lang=await choose([{id:'kn',label:'ಕನ್ನಡ'},{id:'en',label:'English'},{id:'hi',label:'हिन्दी'}],'kn');
+ if(lang==='en'){setLang('en');}else if(lang==='hi'){await bot(L.hindi);}
+ await bot(L.trust);
+ for(const qa of p.intake){await bot(qa.q);await mic(qa.a);}
+ await bot(L.free);
+ await bot(L.consent,{card:consentCard(p)});
+ const c=await choose([{id:'yes',label:'Yes, I agree'},{id:'photo',label:'Send passbook photos instead'}],'yes');
+ if(c==='photo')await bot(L.photoRoute);
+ await otp(L.otpConsent);
+ await fetchData(p);
+ state.consent[p.id]=nowStr();audit(p.id,'Consent given: 12 months of bank data, this loan file only, 90 days (code confirmed)');renderDash();
+ let a=analyze(p);
+ await bot(p.result,{card:schemesCard(p,a)});
+ if(p.newVenture)await subsidyStep(p);
+ await bot(costLine(p,a),{card:costCard(p,a)});
+ const w=await choose([{id:'why',label:a.band.id==='not'?'What is missing?':'Why is my file strong?'},{id:'next',label:'Continue'}],'why');
+ if(w==='why')await bot(reasonsLine(a));
+ if(a.afford.status==='insufficient'){await shivannaPlan(p);a=analyze(p);}
+ await affordStep(p,a);
+ if(p.full){await docsStep(p);await interviewStep(p);}
+ await approveStep(p);
+ await postLoop(p);
+}
+function startStory(){
+ chat.run++;chat.timers.forEach(clearTimeout);chat.timers=[];chat.micRes=null;chat.choiceRes=null;chat.acceptEvents=false;chat.queue=[];
+ try{speechSynthesis.cancel();}catch(e){}
+ feed.innerHTML='';clearChips();setMic(false);
+ state.started[state.pid]=true;
+ story().catch(e=>{if(e!==CANCEL)console.error(e);});
+}
+
+/* ---------- dashboard ---------- */
+const dbody=$('#dbody');
+function flashBank(){if(window.matchMedia('(max-width:1000px)').matches&&state.view==='phone')$('#vt-dash').classList.add('dot');}
+function cashChart(a){
+ const W=680,H=240,Lp=48,R=10,T=14,B=34,iw=W-Lp-R,ih=H-T-B;
+ const vals=[];a.inflow.forEach((v,i)=>{if(v!=null)vals.push(v,a.outflow[i]);});
+ const step=10000;const max=Math.ceil(Math.max(...vals)*1.08/step)*step;const y=v=>T+ih-v/max*ih;const bw=iw/12;
+ let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly money in and out over 12 months"><defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)" class="c-hatch"><line x1="0" y1="0" x2="0" y2="6"/></pattern></defs>`;
+ const ticks=4;for(let i=0;i<=ticks;i++){const v=max*i/ticks;s+=`<line class="c-grid" x1="${Lp}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="c-lab" x="${Lp-6}" y="${y(v)+4}" text-anchor="end">${v===0?'0':fmtK(v)}</text>`;}
+ const pts=[];
+ MONTHS.forEach((m,i)=>{const x=Lp+i*bw;const vin=a.inflow[i];
+  if(vin==null){s+=`<rect x="${x+bw*.12}" y="${T}" width="${bw*.76}" height="${ih}" fill="url(#hatch)"/>`;}
+  else{if(i===a.leanI)s+=`<rect class="c-lean" x="${x+2}" y="${T}" width="${bw-4}" height="${ih}" rx="4"/>`;
+   s+=`<rect class="c-in" x="${x+bw*.14}" y="${y(vin)}" width="${bw*.36}" height="${T+ih-y(vin)}" rx="2"/><rect class="c-out" x="${x+bw*.52}" y="${y(a.outflow[i])}" width="${bw*.32}" height="${T+ih-y(a.outflow[i])}" rx="2"/>`;
+   pts.push([x+bw/2,y(Math.max(0,a.surplus[i]))]);}
+  s+=`<text class="c-lab" x="${x+bw/2}" y="${H-16}" text-anchor="middle">${m.s}</text>`;if(i===0||m.s==='Jan')s+=`<text class="c-lab" x="${x+bw/2}" y="${H-3}" text-anchor="middle">${m.y}</text>`;});
+ if(pts.length>1)s+=`<polyline class="c-sur" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+ pts.forEach(p=>{s+=`<circle class="c-dot" cx="${p[0]}" cy="${p[1]}" r="3.5"/>`;});
+ return s+'</svg>';
+}
+function gauge(score,band){
+ const r=70,cx=90,cy=86,ang=Math.PI*(1-Math.max(0.5,score)/100);const x=cx+r*Math.cos(ang),y=cy-r*Math.sin(ang);
+ return `<svg class="gauge" viewBox="0 0 180 104" role="img" aria-label="Readiness ${score} out of 100"><path class="g-track" d="M20 86 A70 70 0 0 1 160 86"/><path class="g-val ${band.cls}" d="M20 86 A70 70 0 0 1 ${x.toFixed(1)} ${y.toFixed(1)}"/><text class="g-num" x="90" y="80" text-anchor="middle">${score}</text><text class="g-sub" x="90" y="100" text-anchor="middle">readiness out of 100</text></svg>`;
+}
+function calChart(S){
+ const W=320,H=260,Lp=42,R=10,T=10,B=38,iw=W-Lp-R,ih=H-T-B;const x=v=>Lp+v*iw,y=v=>T+ih-v*ih;
+ let s=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Calibration: predicted versus observed repayment">`;
+ [0,.25,.5,.75,1].forEach(v=>{s+=`<line class="c-grid" x1="${Lp}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="c-lab" x="${Lp-6}" y="${y(v)+4}" text-anchor="end">${v*100}%</text><text class="c-lab" x="${x(v)}" y="${H-22}" text-anchor="middle">${v*100}%</text>`;});
+ s+=`<line class="c-diag" x1="${x(0)}" y1="${y(0)}" x2="${x(1)}" y2="${y(1)}"/>`;
+ s+=`<polyline class="c-cal" points="${S.bins.map(b=>x(b.pred)+','+y(b.obs)).join(' ')}"/>`;
+ S.bins.forEach(b=>{s+=`<circle class="c-calpt" cx="${x(b.pred)}" cy="${y(b.obs)}" r="${3+Math.min(5,b.n/250)}"/>`;});
+ s+=`<text class="c-lab" x="${Lp+iw/2}" y="${H-4}" text-anchor="middle">Predicted chance of on-time repayment</text>`;
+ return s+'</svg>';
+}
+function personaStatus(p){
+ if(!state.started[p.id])return p.sample;
+ if(state.sanctioned[p.id])return{label:'Sanctioned',cls:'good',shared:true};
+ if(state.approved[p.id])return{label:'Submitted',cls:'info',shared:true};
+ if(p.id==='shivanna'&&state.consent[p.id]&&!state.alt[p.id])return{label:'On 90-day plan',cls:'warn'};
+ if(state.consent[p.id])return{label:'Being prepared',cls:'muted'};
+ return{label:'Talking to Saathi',cls:'muted'};
+}
+function clusterView(){
+ const rows=ORDER.map(id=>{const p=PERSONAS[id];const st=personaStatus(p);const a=analyze(p);const shared=st.shared;const live=id===state.pid;
+  const amt=state.accepted[id]!=null?state.accepted[id]:a.request;
+  return `<tr class="${live?'live':''}"><td><b>${p.name}</b><br><small style="color:var(--muted)">${p.role}</small></td><td>${p.place}</td><td class="num">${fmt(amt)}</td><td>${shared&&a.rec?a.rec.name:'—'}</td><td>${shared?`<span class="pill ${a.band.cls}">${a.score}</span>`:'<small style="color:var(--muted)">Hidden until approval</small>'}</td><td><span class="pill ${st.cls}">${st.label}</span></td><td><button class="btn" type="button" data-act="open" data-pid="${id}">${live?'View file':'Play story'}</button></td></tr>`;}).join('');
+ const stat=[['Sarojamma K','Flour mill','Vemgal, Kolar',180000,'MUDRA Kishore',74,'Needs 1 document','warn'],['Imran Pasha','Two-wheeler repair','Malur, Kolar',220000,'MUDRA Kishore',79,'Submitted','info']].map(r=>`<tr><td><b>${r[0]}</b><br><small style="color:var(--muted)">${r[1]}</small></td><td>${r[2]}</td><td class="num">${fmt(r[3])}</td><td>${r[4]}</td><td><span class="pill good">${r[5]}</span></td><td><span class="pill ${r[7]}">${r[6]}</span></td><td><small style="color:var(--muted)">Sample row</small></td></tr>`).join('');
+ const ready=ORDER.filter(id=>personaStatus(PERSONAS[id]).shared).length+1;
+ return `<div class="kpis"><div class="kpi"><span>Saathi files this month</span><b>23</b></div><div class="kpi"><span>Complete at first submission</span><b>91%</b></div><div class="kpi"><span>Median days to loan-ready</span><b>2.4</b></div><div class="kpi"><span>Women applicants</span><b>61%</b></div></div>
+ <div class="banner info">${ic('alert')}<span>The four figures above are sample numbers for the demo. The table below is live: it changes as you play each owner's story.</span></div>
+ <section class="sec"><h3>Kolar district cluster</h3><p class="lead">Files prepared by Saathi for this branch. Scores stay hidden until the owner approves sharing.</p>
+ <div class="tablewrap"><table><thead><tr><th>Owner</th><th>Place</th><th>Loan</th><th>Scheme</th><th>Readiness</th><th>Status</th><th></th></tr></thead><tbody>${rows}${stat}</tbody></table></div>
+ <div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-act="plan">${ic('pin')} Plan one field visit for the ready files</button></div>
+ ${state.visitPlan?`<div class="banner info" style="margin-top:10px">${ic('check')}<span><b>Thursday 19 Nov:</b> one trip through Vemgal, Malur and Mulbagal covers ${ready} submitted files. Without clustering that is ${ready} separate visits, so ${ready-1} trips saved.</span></div>`:''}</section>
+ <section class="sec"><h3>Why earlier loan attempts stalled</h3><p class="lead">Captured from owners' own words during intake (field question 2). Sample of 23 conversations.</p>
+ <div class="hbars">${[['Too many documents',48],['Agent asked for money',22],['Name or document mismatch',17],['Bank asked for ITR or audited accounts',13]].map(([k,v])=>`<div class="hb"><span>${k}</span><span class="tr"><i style="width:${v*2}%"></i></span><b class="num">${v}%</b></div>`).join('')}</div></section>`;
+}
+function lockBox(title,text,peek){return `<div class="lock">${ic('lock')}<h3>${title}</h3><p>${text}</p>${peek?`<button class="btn" type="button" data-act="peek">See what the bank will receive (demo preview)</button>`:''}</div>`;}
+function fileView(){
+ const p=cur();
+ if(!state.consent[p.id])return lockBox(`No data for ${p.name} yet`,`${p.name} has not given consent to share bank data. Saathi cannot see anything until ${p.pron} does. Answer on the phone to continue.`,false);
+ if(!state.approved[p.id]&&!state.peek)return lockBox(`Waiting for ${p.name}'s approval`,'Banks see nothing until the owner hears the full application read back and says yes.',true);
+ const w=state.whatIf;const a0=analyze(p);
+ const amt=w&&w.amount!=null?w.amount:a0.amount;
+ const sl=(id,label,min,max,step,val,fmtv)=>`<label for="${id}">${label} <b id="${id}-v">${fmtv(val)}</b><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></label>`;
+ const ok=!!state.approved[p.id];
+ return `${!ok?`<div class="banner warn">${ic('lock')}<span><b>Demo preview.</b> In the real product the bank cannot open this until ${p.name} approves. <button class="linkbtn" type="button" data-act="unpeek">Close preview</button></span></div>`:''}
+ <div class="fhead"><div><h3>${p.name}</h3><p>${p.activity} · ${p.place}</p></div>
+ <div class="actions"><button class="btn" type="button" data-act="reqdoc" ${ok?'':'disabled'}>${ic('camera')} Ask for workplace photo</button><button class="btn" type="button" data-act="visit" ${ok?'':'disabled'}>${ic('clock')} Book branch visit</button><button class="btn primary" type="button" data-act="sanction" ${ok&&!state.sanctioned[p.id]?'':'disabled'}>${ic('check')} Mark sanctioned (demo)</button></div></div>
+ <details class="sec" id="wiBox" ${state.wiOpen?'open':''}><summary style="cursor:pointer;font-weight:600">Try your own numbers (what-if)</summary><p class="lead" style="margin-top:6px">Move a slider and every number below is recalculated by the same rules engine and scorecard.</p>
+ <div class="whatif">${sl('wi-amount','Loan amount',50000,2000000,10000,amt,fmt)}${sl('wi-income','Income change',-30,30,5,w&&w.incomeAdj!=null?w.incomeAdj*100:0,v=>(v>0?'+':'')+v+'%')}${sl('wi-history','Months of bank history',0,36,1,w&&w.history!=null?w.history:a0.history,v=>v+' months')}${sl('wi-tenure','Repayment months',12,84,6,w&&w.tenure?w.tenure:a0.tenure,v=>v+' months')}</div>
+ <div class="actions" style="margin-top:10px"><button class="btn" type="button" data-act="resetwi">${ic('restart')} Reset to the file</button></div></details>
+ <div id="fileRes">${fileResults()}</div>`;
+}
+function fileResults(){
+ const p=cur();const a=analyze(p,state.whatIf||{});
+ const reasons=`<ul class="reasons">${a.reasons.pos.slice(0,3).map(f=>`<li>${stIcon(true)}<span>${rtext(f,'en',true)}</span></li>`).join('')}${a.reasons.neg.slice(0,3).map(f=>`<li>${stIcon(f.ratio<0.4?false:'chk')}<span>${rtext(f,'en',false)}${f.id==='bounce'&&p.bounceMonth?`, in ${p.bounceMonth}`:''}</span></li>`).join('')}</ul>`;
+ const affordTxt=a.afford.status==='insufficient'?`<span class="pill warn">Not enough history to judge</span>`:a.afford.status==='ok'?`<span class="pill good">Affordable</span>`:`<span class="pill bad">Too high: safe up to ${fmt(a.afford.recommended)}</span>`;
+ const elig=a.elig.map(s=>{const pc=s.status==='eligible'?'good':s.status==='check'?'warn':'bad';const lab=s.status==='eligible'?'Eligible':s.status==='check'?'Bank to confirm':'Not eligible';
+  return `<details class="scheme" ${s===a.rec?'open':''}><summary>${stIcon(s.status==='eligible'?true:s.status==='check'?'chk':false)}<b>${s.name}</b><span class="pill ${pc}">${lab}</span></summary><div class="chk">${s.checks.map(c=>`<div class="crow">${stIcon(c.ok===true?true:c.ok===false?false:'chk')}<span>${c.t}</span><button class="linkbtn" type="button" data-src="${c.src}">Source ${ic('file')}</button></div>`).join('')}</div></details>`;}).join('');
+ const d=state.docs[p.id];
+ const docs=p.full&&d?`<div class="doclist">
+   <div class="docrow">${stIcon(d.aadhaar)} <span>Aadhaar · name read as LAKSHMAMMA B</span></div>
+   <div class="docrow">${stIcon(d.pan)} <span>PAN · name matches Aadhaar</span></div>
+   <div class="docrow">${stIcon(d.passbook)} <span>Passbook · name reads LAKSHMI B${state.mismatchNote[p.id]?'. Owner informed; KYC update planned at branch visit':''}</span></div>
+   <div class="docrow">${stIcon(d.quote)} <span>Machine quotation · Ganesh Sewing Machines, Kolar</span></div>
+   ${GEN.map(g=>`<div class="docrow">${stIcon(state.mismatchNote[p.id]?true:'wait')} <span style="flex:1">${g.en} · made by Saathi</span>${(g.id==='report'||g.id==='cash')&&state.mismatchNote[p.id]?`<button class="linkbtn" type="button" data-doc="${g.id}">Preview</button>`:''}</div>`).join('')}
+   ${state.bankDocs[p.id]?`<div class="docrow">${stIcon(true)} <span>Workplace photo with signboard · location and time attached · ${state.bankDocs[p.id].t}</span></div>`:''}
+  </div>`:`<div class="doclist">${p.id==='shivanna'&&state.alt[p.id]?`<div class="docrow">${stIcon(true)} <span>Dairy society milk statement · 12 months · other evidence of income</span></div>`:''}${state.bankDocs[p.id]?`<div class="docrow">${stIcon(true)} <span>Workplace photo with signboard · location and time attached</span></div>`:''}<div class="docrow">${stIcon(true)} <span>Cash-flow statement made by Saathi</span> <button class="linkbtn" type="button" data-doc="cash">Preview</button></div><p class="lead" style="margin:6px 0 0">The full document step (photo checks, mismatch fix) is shown in Lakshmamma's story.</p></div>`;
+ const au=(state.audit[p.id]||[]).map(x=>`<li><time>${x.t}</time><span>${x.text}</span></li>`).join('');
+ const seasonal=a.seasonal?`<div class="tablewrap"><table><thead><tr><th>Month</th>${MONTHS.map(m=>`<th>${m.s}</th>`).join('')}</tr></thead><tbody><tr><td>Standard</td>${MONTHS.map(()=>`<td class="num">${fmtK(a.emi)}</td>`).join('')}</tr><tr><td>Seasonal</td>${a.seasonal.map(v=>`<td class="num">${v==null?'—':fmtK(v)}</td>`).join('')}</tr></tbody></table></div>`:'<p class="lead">Needs at least 6 months of data.</p>';
+ return `${state.whatIf?`<div class="banner warn">${ic('alert')}<span><b>What-if mode.</b> These numbers are a simulation and are not saved to the file.</span></div>`:''}
+ <div class="facts sec"><div class="fact"><span>Asked for</span><b class="num">${fmt(a.request)}</b></div><div class="fact"><span>Evaluated amount</span><b class="num">${fmt(a.amount)}</b></div><div class="fact"><span>Best scheme</span><b>${a.rec?a.rec.name:'None yet'}</b></div><div class="fact"><span>EMI</span><b class="num">${fmt(a.emi)} × ${a.tenure}</b></div><div class="fact"><span>Owner approval</span><b>${state.approved[p.id]?'Voice yes + code':'Not yet'}</b></div></div>
+ ${state.keptRisk[p.id]?`<div class="banner warn">${ic('alert')}<span>The owner chose to keep the original amount after Saathi's affordability warning. Consider the seasonal schedule below.</span></div>`:''}
+ <div class="grid2">
+  <section class="sec"><h3>Readiness</h3><p class="lead">A scorecard the officer can read line by line. It supports the decision; it does not make it.</p>
+   <div class="gaugewrap">${gauge(a.score,a.band)}<div><span class="pill ${a.band.cls}">${a.band.label}</span><p style="margin:8px 0 0;font-size:13px">Estimated chance of on-time repayment: <b>${pctS(a.prob)}</b></p><p class="lead" style="margin:2px 0 0">Calibrated on synthetic data. See Model trust.</p></div></div>${reasons}</section>
+  <section class="sec"><h3>Affordability</h3><p class="lead">Can the owner pay in the slowest month, not just on average?</p>
+   <div class="facts"><div class="fact"><span>DSCR</span><b>${a.dscr.toFixed(2)}×</b></div><div class="fact"><span>Slowest month</span><b>${MONTHS[a.leanI].full}</b></div><div class="fact"><span>Result</span><b>${affordTxt}</b></div></div>
+   ${affordChartSvg(a,[{v:a.emi,cls:a.leanPass?'c-emi-good':'c-emi-bad'}])}
+   <div class="legend"><span><i style="background:var(--primary)"></i>Surplus + half of expected extra income</span><span><i style="background:${a.leanPass?'var(--good)':'var(--bad)'}"></i>EMI</span></div></section>
+ </div>
+ <section class="sec"><h3>Cash flow from bank data</h3><p class="lead">${a.alt?'Months before the bank account come from the dairy society statement.':p.id==='shivanna'?'Hatched months: no bank data (account opened June 2026).':`${p.upi.payments} UPI payments from ${p.upi.payers} customers.`} Average in ${fmt(a.avgIn)}, out ${fmt(a.avgOut)}, surplus ${fmt(a.avgSur)} a month.</p>
+  ${cashChart(a)}<div class="legend"><span><i style="background:var(--primary)"></i>Money in</span><span><i style="background:var(--muted);opacity:.4"></i>Money out</span><span><i style="background:var(--accent)"></i>Surplus</span><span><i style="background:var(--accent-soft)"></i>Slowest month</span></div></section>
+ <section class="sec"><h3>Eligibility, with sources</h3><p class="lead">Decided by fixed rules, not by the AI. Click any Source to see the clause it comes from.</p><div class="elig">${elig}</div></section>
+ <div class="grid2">
+  <section class="sec"><h3>Documents</h3>${docs}</section>
+  <section class="sec"><h3>Consent and audit trail</h3><dl class="kv" style="margin-bottom:10px"><dt>Purpose</dt><dd>Prepare this loan file</dd><dt>Data</dt><dd>Bank transactions, 12 months</dd><dt>Shared with</dt><dd>Demo Bank, ${p.branch} branch</dd><dt>Valid for</dt><dd>90 days</dd><dt>Via</dt><dd>Account Aggregator (sandbox)</dd></dl><ul class="audit">${au}</ul></section>
+ </div>
+ <div class="grid2">
+  <section class="sec"><h3>Seasonal EMI suggestion</h3><p class="lead">Same yearly total, shaped to the owner's income. For discussion with the bank; not every product allows it.</p>${seasonal}</section>
+  <section class="sec"><h3>Field insights from the conversation</h3><p class="lead">Answers to the brief's field questions, captured during intake.</p><dl class="kv">${p.field.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl></section>
+ </div>`;
+}
+function bindWhatIf(){
+ const box=document.getElementById('wiBox');if(box)box.addEventListener('toggle',()=>{state.wiOpen=box.open;});
+ const ids=['wi-amount','wi-income','wi-history','wi-tenure'];
+ ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('input',()=>{
+  const v=k=>Number(document.getElementById(k).value);
+  state.whatIf={amount:v('wi-amount'),incomeAdj:v('wi-income')/100,history:v('wi-history'),tenure:v('wi-tenure')};
+  document.getElementById('wi-amount-v').textContent=fmt(v('wi-amount'));document.getElementById('wi-income-v').textContent=(v('wi-income')>0?'+':'')+v('wi-income')+'%';
+  document.getElementById('wi-history-v').textContent=v('wi-history')+' months';document.getElementById('wi-tenure-v').textContent=v('wi-tenure')+' months';
+  document.getElementById('fileRes').innerHTML=fileResults();});});
+}
+function trustView(){
+ const S=synth();const thr=5;
+ const gp=(g)=>g<thr?`<span class="pill good">${g.toFixed(1)} pts · within ${thr}</span>`:`<span class="pill bad">${g.toFixed(1)} pts · over ${thr}</span>`;
+ const row=x=>`<tr><td>${x.v}</td><td class="num">${x.n.toLocaleString('en-IN')}</td><td class="num">${pctS(x.ready)}</td><td class="num">${pctS(x.tpr)}</td></tr>`;
+ return `<div class="banner info">${ic('alert')}<span>Everything on this tab is computed live in your browser from <b>${S.n.toLocaleString('en-IN')} synthetic applicants</b>. A lender pilot would recalibrate the model on real repayment data.</span></div>
+ <div class="grid2">
+  <section class="sec"><h3>Inputs the model uses</h3><ol class="listplain">${Object.values(FLABEL).map(v=>`<li>${v}</li>`).join('')}</ol></section>
+  <section class="sec"><h3>Never used</h3><p class="lead">Kept out of the model entirely. Gender and region are used only to audit outcomes.</p><ol class="listplain"><li>Gender</li><li>Caste or social category</li><li>Religion</li><li>Region and PIN code (can stand in for caste or region)</li><li>Name</li><li>Marital status</li></ol></section>
+ </div>
+ <div class="grid2">
+  <section class="sec"><h3>Calibration</h3><p class="lead">If the model says 80%, about 80% should repay. Points close to the dashed line mean the probabilities can be trusted.</p>${calChart(S)}<div class="facts"><div class="fact"><span>Brier score (lower is better)</span><b>${S.brier.toFixed(3)}</b></div><div class="fact"><span>Repaid on time (synthetic)</span><b>${pctS(S.base)}</b></div></div></section>
+  <section class="sec"><h3>Fairness audit</h3><p class="lead">"Rated ready" means a score of 70 or more. The second rate looks only at people who did repay, so it shows whether good borrowers are treated equally.</p>
+   <div class="tablewrap"><table><thead><tr><th>Group</th><th>Applicants</th><th>Rated ready</th><th>Ready, among those who repaid</th></tr></thead><tbody>${S.gender.map(row).join('')}</tbody></table></div>
+   <p style="margin:8px 0 14px;font-size:13px">Gender gap: ${gp(S.gGap.ready)} · among repayers ${gp(S.gGap.tpr)}</p>
+   <div class="tablewrap"><table><thead><tr><th>Region</th><th>Applicants</th><th>Rated ready</th><th>Ready, among those who repaid</th></tr></thead><tbody>${S.region.map(row).join('')}</tbody></table></div>
+   <p style="margin:8px 0 0;font-size:13px">Region gap: ${gp(S.rGap.ready)} · among repayers ${gp(S.rGap.tpr)}</p></section>
+ </div>
+ <section class="sec"><h3>Hidden stand-in check</h3><p class="lead">How strongly each input tracks gender. Values near zero mean the input is not secretly standing in for gender.</p>
+  <div class="hbars">${S.proxies.map(x=>`<div class="hb"><span>${x.k}</span><span class="tr"><i style="width:${Math.min(100,x.r*1000)}%;background:${x.r<0.1?'var(--good)':'var(--bad)'}"></i></span><b class="num">${x.r.toFixed(3)}</b></div>`).join('')}</div><p class="lead" style="margin-top:8px">Bar scale: full width = 0.10, the alert threshold.</p></section>
+ <section class="sec"><h3>Model card</h3><dl class="kv"><dt>Purpose</dt><dd>Show how ready a file is and why, in plain words</dd><dt>Not for</dt><dd>Automatic approval or rejection. The bank officer decides.</dd><dt>Explanations</dt><dd>Top reasons in the officer's view; the same reasons spoken to the owner in Kannada with a tip to improve</dd><dt>Review</dt><dd>Recalibrate and re-audit monthly once real repayment data exists</dd></dl></section>`;
+}
+const MDEF={hb:6,ha:2,rate:400,sb:2.4,sa:1.1,vb:3,va:0.25,vc:500,files:40,fee:1000};
+function moneyView(){
+ const f=(id,label,v,step)=>`<label for="m-${id}">${label}<input type="number" id="m-${id}" value="${v}" step="${step||1}" min="0"></label>`;
+ return `<section class="sec"><h3>What an incomplete file costs the bank</h3><p class="lead">The brief asks: "Every incomplete file costs a lender time. Find out how much." These inputs are placeholders. Replace them with figures from branch-manager interviews.</p>
+ <div class="money">${f('hb','Staff hours per file, today',MDEF.hb,.5)}${f('ha','Staff hours per file, with Saathi',MDEF.ha,.5)}${f('rate','Staff cost per hour (₹)',MDEF.rate,50)}${f('sb','Submissions per file, today',MDEF.sb,.1)}${f('sa','Submissions per file, with Saathi',MDEF.sa,.1)}${f('vb','Field visits per file, today',MDEF.vb,.5)}${f('va','Field visits per file, with clustering',MDEF.va,.05)}${f('vc','Cost per field visit (₹)',MDEF.vc,50)}${f('files','Files per month at this branch',MDEF.files,1)}${f('fee','Fee the bank pays Saathi per complete file (₹)',MDEF.fee,100)}</div></section>
+ <div id="moneyOut">${moneyOut()}</div>`;
+}
+function moneyOut(){
+ const g=id=>{const el=document.getElementById('m-'+id);return el?Number(el.value)||0:MDEF[id];};
+ const before=g('hb')*g('rate')*g('sb')+g('vb')*g('vc');const after=g('ha')*g('rate')*g('sa')+g('va')*g('vc');const save=before-after;const net=save-g('fee');
+ return `<div class="kpis"><div class="kpi"><span>Cost per file today</span><b>${fmt(before)}</b></div><div class="kpi"><span>Cost per file with Saathi</span><b>${fmt(after)}</b></div><div class="kpi"><span>Saved per file</span><b style="color:var(--good)">${fmt(save)}</b></div><div class="kpi"><span>Saved per month</span><b>${fmt(save*g('files'))}</b></div><div class="kpi"><span>Bank's net saving after Saathi's fee</span><b style="color:${net>=0?'var(--good)':'var(--bad)'}">${fmt(net)}</b></div></div>
+ <section class="sec" style="margin-top:16px"><h3>How it adds up</h3><p class="lead" style="margin:0">Cost per file = staff hours × staff cost × number of submissions + field visits × cost per visit. Saathi earns from the lender, so the owner pays nothing and no middleman takes a cut.</p></section>`;
+}
+function bindMoney(){$$('.money input').forEach(el=>el.addEventListener('input',()=>{$('#moneyOut').innerHTML=moneyOut();}));}
+function renderDash(){
+ $$('.tab').forEach(t=>t.setAttribute('aria-selected',String(t.dataset.tab===state.tab)));
+ const p=cur();$('#dheadPill').textContent=state.tab==='file'?`Viewing: ${p.name}`:'Saathi files';
+ const tab=state.tab;
+ if(tab==='cluster')dbody.innerHTML=clusterView();
+ else if(tab==='file'){dbody.innerHTML=fileView();bindWhatIf();}
+ else if(tab==='trust')dbody.innerHTML=trustView();
+ else{dbody.innerHTML=moneyView();bindMoney();}
+}
+
+/* ---------- modal ---------- */
+const modal=$('#modal'),mbox=$('#mbox');
+function openModal(html){mbox.innerHTML=`<button class="mclose" type="button" data-act="close">Close</button>`+html;modal.hidden=false;mbox.querySelector('.mclose').focus();}
+function closeModal(){modal.hidden=true;}
+modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-act="close"]'))closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeModal();});
+function openSource(id){
+ const s=SRC[id];if(!s)return;const d=DOCSRC[s.doc];
+ openModal(`<h3 id="mTitle">${d.title}</h3><div class="meta">Section: ${s.sec} · Rule ${id}</div><blockquote>${s.text}</blockquote><p class="fine" style="margin-top:12px">Demo excerpt, paraphrased from the official guideline. Verify against the current version before real use.</p><p><a href="${d.url}" target="_blank" rel="noopener">Open the official scheme website ${ic('ext')}</a></p>`);
+}
+function openDoc(kind){
+ const p=cur();const a=analyze(p);const amt=state.accepted[p.id]!=null?state.accepted[p.id]:a.request;
+ const cash=`<table><thead><tr><th>Month</th><th>In</th><th>Out</th><th>Surplus</th></tr></thead><tbody>${MONTHS.map((m,i)=>a.inflow[i]==null?`<tr><td>${m.s} ${m.y}</td><td colspan="3" style="color:var(--muted)">No bank data</td></tr>`:`<tr><td>${m.s} ${m.y}</td><td class="num">${fmt(a.inflow[i])}</td><td class="num">${fmt(a.outflow[i])}</td><td class="num">${fmt(a.surplus[i])}</td></tr>`).join('')}</tbody></table>`;
+ if(kind==='cash'){openModal(`<h3 id="mTitle">Cash-flow statement</h3><div class="meta">${p.name} · prepared by Saathi from bank data · sample</div>${cash}`);return;}
+ const embroid=amt-76000;
+ openModal(`<div class="report"><h3 id="mTitle">Project report</h3><div class="meta">${p.name} · generated by Saathi from the conversation and bank data · sample</div>
+ <h4>Business</h4><dl class="kv"><dt>Activity</dt><dd>${p.activity}</dd><dt>Location</dt><dd>${p.place}</dd><dt>Running since</dt><dd>${p.years} years</dd><dt>Customers</dt><dd>${p.upi.payers} paying by UPI in the last 12 months</dd></dl>
+ <h4>Cost of the project</h4><table><tbody><tr><td>2 industrial sewing machines</td><td class="num">${fmt(76000)}</td></tr><tr><td>Embroidery machine (${amt>=300000?'multi-head':'single-head'})</td><td class="num">${fmt(embroid)}</td></tr><tr><td><b>Total</b></td><td class="num"><b>${fmt(amt)}</b></td></tr></tbody></table>
+ <h4>Means of finance</h4><dl class="kv"><dt>Scheme</dt><dd>${a.rec?a.rec.name:'MUDRA'}</dd><dt>Loan</dt><dd class="num">${fmt(amt)}</dd><dt>Repayment</dt><dd>${a.tenure} months, about ${fmt(emiOf(amt,p.rate,a.tenure))} a month (indicative 11%)</dd><dt>Collateral</dt><dd>None required</dd></dl>
+ <h4>Repayment capacity</h4><dl class="kv"><dt>Average income</dt><dd class="num">${fmt(a.avgIn)} a month</dd><dt>Average surplus</dt><dd class="num">${fmt(a.avgSur)} a month</dd><dt>Expected extra income</dt><dd class="num">${fmt(p.extra)} a month (half counted)</dd><dt>DSCR</dt><dd>${a.dscr.toFixed(2)}×</dd><dt>Slowest month</dt><dd>${MONTHS[a.leanI].full}</dd></dl></div>`);
+}
+
+/* ---------- wiring ---------- */
+document.addEventListener('click',e=>{
+ const s=e.target.closest('[data-src]');if(s){openSource(s.dataset.src);return;}
+ const d=e.target.closest('[data-doc]');if(d){openDoc(d.dataset.doc);return;}
+ const t=e.target.closest('.tab');if(t){state.tab=t.dataset.tab;renderDash();return;}
+ const a=e.target.closest('[data-act]');if(!a)return;
+ const act=a.dataset.act;
+ if(act==='open'){const pid=a.dataset.pid;state.tab='file';if(pid!==state.pid)switchPersona(pid);else renderDash();}
+ else if(act==='peek'){state.peek=true;renderDash();}
+ else if(act==='unpeek'){state.peek=false;renderDash();}
+ else if(act==='plan'){state.visitPlan=true;renderDash();}
+ else if(act==='resetwi'){state.whatIf=null;renderDash();}
+ else if(act==='reqdoc'){externalEvent('doc');a.disabled=true;showPhoneHint();}
+ else if(act==='visit'){externalEvent('visit');a.disabled=true;showPhoneHint();}
+ else if(act==='sanction'){externalEvent('sanction');a.disabled=true;showPhoneHint();}
+});
+function showPhoneHint(){flashBankPhone();}
+function flashBankPhone(){if(window.matchMedia('(max-width:1000px)').matches&&state.view==='dash')$('#vt-phone').classList.add('dot');}
+function renderPersonas(){
+ $('#personas').innerHTML=ORDER.map(id=>{const p=PERSONAS[id];return `<button class="pbtn" type="button" data-pid="${id}" aria-pressed="${id===state.pid}"><span class="av">${p.initials}</span><span><b>${p.name.split(' ')[0]}</b><small>${p.role}</small></span></button>`;}).join('');
+ $$('#personas .pbtn').forEach(b=>b.addEventListener('click',()=>switchPersona(b.dataset.pid)));
+}
+function switchPersona(pid){state.pid=pid;resetPersona(pid);renderPersonas();$('#phSub').textContent=`Talking with ${PERSONAS[pid].name} · ${PERSONAS[pid].place}`;startStory();renderDash();}
+function setLang(l){state.lang=l;$('#langBtn').textContent=l==='kn'?'ಕನ್ನಡ':'EN';rerenderTexts();}
+$('#langBtn').addEventListener('click',()=>setLang(state.lang==='kn'?'en':'kn'));
+function paintSub(){const b=$('#subBtn');b.setAttribute('aria-pressed',String(state.subs));b.innerHTML=ic('cc')+(state.subs?'On':'Off');}
+$('#subBtn').addEventListener('click',()=>{state.subs=!state.subs;paintSub();rerenderTexts();});
+function paintVoice(){const b=$('#voiceBtn');b.setAttribute('aria-pressed',String(state.voice));b.innerHTML=ic(state.voice?'speaker':'mute')+(state.voice?'Voice':'Voice');b.title=state.voice?'Voice is on':'Voice is off. Tap to read messages aloud';}
+$('#voiceBtn').addEventListener('click',()=>{state.voice=!state.voice;paintVoice();if(!state.voice){try{speechSynthesis.cancel();}catch(e){}}});
+function paintAuto(){const b=$('#autoBtn');b.setAttribute('aria-pressed',String(chat.autoplay));b.innerHTML=ic('auto')+(chat.autoplay?'Auto-play on':'Auto-play story');}
+$('#autoBtn').addEventListener('click',()=>{chat.autoplay=!chat.autoplay;paintAuto();
+ if(chat.autoplay){if(chat.micRes){const r=chat.micRes;chat.micRes=null;r();}else if(chat.choiceRes&&chat.choiceDef){chat.choiceRes(chat.choiceDef);}}});
+$('#restartBtn').innerHTML=ic('restart')+'Restart story';
+$('#restartBtn').addEventListener('click',()=>switchPersona(state.pid));
+function setView(v){state.view=v;$('#stage').dataset.view=v;$('#vt-phone').setAttribute('aria-selected',String(v==='phone'));$('#vt-dash').setAttribute('aria-selected',String(v==='dash'));$('#vt-'+(v==='phone'?'phone':'dash')).classList.remove('dot');}
+$('#vt-phone').addEventListener('click',()=>setView('phone'));
+$('#vt-dash').addEventListener('click',()=>setView('dash'));
+$('#verified').innerHTML=`<svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px" aria-label="Verified business account">${ICONS.badge}</svg>`;
+$('#bankIc').innerHTML=ic('bank');
+micBtn.innerHTML=ic('mic');
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{};}catch(e){}
+
+paintSub();paintVoice();paintAuto();renderPersonas();
+$('#phSub').textContent=`Talking with ${cur().name} · ${cur().place}`;
+renderDash();startStory();
+</script>
+
+</body>
+</html>

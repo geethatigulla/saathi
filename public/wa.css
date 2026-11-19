@@ -1,0 +1,118 @@
+/* WhatsApp-style chat skin for the owner's phone (used by the live app and the scripted demo).
+   Only the phone screen is restyled; the bank dashboard keeps the app's own look.
+   Original wallpaper pattern; no WhatsApp logo or assets are used. */
+:root{
+  --wa-head:#008069; --wa-head-ink:#ffffff;
+  --wa-wall:#efeae2; --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' fill='none' stroke='%23000' stroke-opacity='.055' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 20h14M18 26h14M24 20c6 0 6 10 0 10l-6 0 10 12'/%3E%3Ccircle cx='96' cy='24' r='7'/%3E%3Cpath d='M60 58c6-10 18-10 22 0-6 8-16 8-22 0zM71 56v12'/%3E%3Cpath d='M110 72l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M16 92h22v18H16zM16 98h22'/%3E%3Cpath d='M70 112c0-8 14-8 14 0s-14 8-14 0'/%3E%3Cpath d='M118 118c-4-6 4-12 8-6 4-6 12 0 8 6l-8 8z'/%3E%3Cpath d='M44 18l6 6M50 18l-6 6'/%3E%3C/svg%3E");
+  --wa-in:#ffffff; --wa-out:#d9fdd3; --wa-ink:#111b21; --wa-meta:#667781; --wa-tick:#53bdeb;
+  --wa-bar:#f0f2f5; --wa-field:#ffffff; --wa-green:#00a884; --wa-link:#027eb5;
+  --wa-chip:#ffffff; --wa-sys:#ffeecd; --wa-sys-ink:#54656f; --wa-line:rgba(11,20,26,.1);
+  --wa-shadow:0 1px .5px rgba(11,20,26,.13);
+  --wa-font:"Segoe UI","Helvetica Neue",Helvetica,"Noto Sans Kannada","Nirmala UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --wa-head:#202c33; --wa-head-ink:#e9edef;
+  --wa-wall:#0b141a; --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' fill='none' stroke='%23fff' stroke-opacity='.045' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 20h14M18 26h14M24 20c6 0 6 10 0 10l-6 0 10 12'/%3E%3Ccircle cx='96' cy='24' r='7'/%3E%3Cpath d='M60 58c6-10 18-10 22 0-6 8-16 8-22 0zM71 56v12'/%3E%3Cpath d='M110 72l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M16 92h22v18H16zM16 98h22'/%3E%3Cpath d='M70 112c0-8 14-8 14 0s-14 8-14 0'/%3E%3Cpath d='M118 118c-4-6 4-12 8-6 4-6 12 0 8 6l-8 8z'/%3E%3Cpath d='M44 18l6 6M50 18l-6 6'/%3E%3C/svg%3E");
+  --wa-in:#202c33; --wa-out:#005c4b; --wa-ink:#e9edef; --wa-meta:#8696a0;
+  --wa-bar:#202c33; --wa-field:#2a3942; --wa-link:#53bdeb; --wa-chip:#202c33;
+  --wa-sys:#182229; --wa-sys-ink:#8696a0; --wa-line:rgba(233,237,239,.12); --wa-shadow:0 1px .5px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{
+  --wa-head:#202c33; --wa-head-ink:#e9edef;
+  --wa-wall:#0b141a; --wa-doodle:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' fill='none' stroke='%23fff' stroke-opacity='.045' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 20h14M18 26h14M24 20c6 0 6 10 0 10l-6 0 10 12'/%3E%3Ccircle cx='96' cy='24' r='7'/%3E%3Cpath d='M60 58c6-10 18-10 22 0-6 8-16 8-22 0zM71 56v12'/%3E%3Cpath d='M110 72l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M16 92h22v18H16zM16 98h22'/%3E%3Cpath d='M70 112c0-8 14-8 14 0s-14 8-14 0'/%3E%3Cpath d='M118 118c-4-6 4-12 8-6 4-6 12 0 8 6l-8 8z'/%3E%3Cpath d='M44 18l6 6M50 18l-6 6'/%3E%3C/svg%3E");
+  --wa-in:#202c33; --wa-out:#005c4b; --wa-ink:#e9edef; --wa-meta:#8696a0;
+  --wa-bar:#202c33; --wa-field:#2a3942; --wa-link:#53bdeb; --wa-chip:#202c33;
+  --wa-sys:#182229; --wa-sys-ink:#8696a0; --wa-line:rgba(233,237,239,.12); --wa-shadow:0 1px .5px rgba(0,0,0,.4)}
+
+/* screen + wallpaper */
+.screen{background-color:var(--wa-wall);background-image:var(--wa-doodle);background-size:140px 140px;font-family:var(--wa-font);color:var(--wa-ink)}
+.screen .feed{background:transparent;gap:2px;padding:10px 16px 8px}
+
+/* header */
+.screen .ph-head{background:var(--wa-head);color:var(--wa-head-ink);padding:9px 10px 9px 6px;gap:8px;min-height:58px}
+.screen .ph-head::before{content:"";flex:none;width:22px;height:22px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z'/%3E%3C/svg%3E") center/contain no-repeat}
+.screen .ph-av{width:40px;height:40px;font-size:17px}
+.screen .ph-t b{font-family:var(--wa-font);font-size:16.5px;font-weight:600}
+.screen .ph-t small{font-size:12.5px;opacity:.82}
+.screen .hbtn{background:transparent;color:inherit;border-radius:20px;padding:7px 8px;font-size:12px;font-weight:600}
+.screen .hbtn:hover{background:rgba(255,255,255,.12)}
+.screen .hbtn[aria-pressed="true"]{background:rgba(255,255,255,.2);color:inherit}
+.screen .hbtn .ic{width:20px;height:20px}
+/* subtitle and voice toggles show as header icons (state is in aria-pressed and the title) */
+.screen #subBtn,.screen #voiceBtn{font-size:0;gap:0;width:38px;height:38px;padding:0;justify-content:center;border-radius:50%;flex:none}
+.screen #langBtn{flex:none;padding:6px 8px}
+.screen .ph-t b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.screen .ph-t b .ic{flex:none}
+@media (max-width:420px){.screen .ph-head{gap:5px;padding-left:4px}.screen .ph-av{width:36px;height:36px}}
+
+/* day separator and system notes */
+.screen .daychip{background:var(--wa-in);color:var(--wa-sys-ink);font-size:12.5px;padding:5px 12px;border-radius:7.5px;box-shadow:var(--wa-shadow);margin:8px 0 6px}
+.screen .msg.note{background:var(--wa-sys);color:var(--wa-sys-ink);border-radius:7.5px;box-shadow:var(--wa-shadow);font-size:12.5px;padding:5px 12px;margin:8px 0;max-width:86%}
+
+/* bubbles */
+.screen .msg{max-width:84%;padding:6px 8px 7px 9px;border-radius:7.5px;box-shadow:var(--wa-shadow);font-size:14.2px;line-height:19px;color:var(--wa-ink)}
+.screen .msg .pri{font-size:14.2px}
+.screen .msg .kn{line-height:1.6}
+.screen .msg.bot{background:var(--wa-in);padding-right:32px}
+.screen .msg.user{background:var(--wa-out)}
+.screen .msg.bot:not(.msg.bot + .msg.bot){border-top-left-radius:0;margin-top:8px}
+.screen .msg.user:not(.msg.user + .msg.user){border-top-right-radius:0;margin-top:8px}
+.screen .msg.bot:not(.msg.bot + .msg.bot)::before,
+.screen .msg.user:not(.msg.user + .msg.user)::before{content:"";position:absolute;top:0;width:8px;height:13px;background:inherit}
+.screen .msg.bot:not(.msg.bot + .msg.bot)::before{left:-8px;clip-path:polygon(0 0,100% 0,100% 100%)}
+.screen .msg.user:not(.msg.user + .msg.user)::before{right:-8px;clip-path:polygon(0 0,100% 0,0 100%)}
+.screen .msg.err{border-radius:7.5px;padding-right:12px}
+.screen .msg.err::before{display:none}
+.screen .msg .role{color:#c27a00;font-size:12.5px;letter-spacing:0;text-transform:none;font-weight:600}
+.screen .sub{color:var(--wa-meta);border-top:1px solid var(--wa-line);font-size:13px;line-height:18px}
+.screen .say{background:transparent;color:var(--wa-meta);top:4px;right:4px}
+.screen .say:hover{background:var(--wa-line)}
+
+/* time and ticks sit at the bottom right of the bubble */
+.screen .ts{float:right;margin:6px 0 -5px 12px;font-size:11px;color:var(--wa-meta);line-height:15px;white-space:nowrap}
+.screen .tick{color:var(--wa-tick);letter-spacing:-3px;margin-left:3px}
+
+/* voice note */
+.screen .vn{color:var(--wa-meta);gap:10px;margin-bottom:4px}
+.screen .vn .say{position:static;width:30px;height:30px;color:var(--wa-meta)}
+.screen .vn .ic{width:20px;height:20px}
+.screen .wave i{background:var(--wa-meta);opacity:.75}
+.screen .vn .dur{font-family:var(--wa-font);color:var(--wa-meta)}
+
+/* photos */
+.screen .photo{border:0;border-radius:6px;background:transparent;width:220px}
+.screen .photo img{display:block;width:100%;border-radius:6px}
+.screen .photo .cap{color:var(--wa-ink);padding:6px 4px 2px}
+
+/* cards Saathi sends (scheme results, documents...) look like an incoming message */
+.screen .ccard{background:var(--wa-in);border:0;border-radius:7.5px;box-shadow:var(--wa-shadow);align-self:flex-start;width:88%;margin:2px 0 0;color:var(--wa-ink)}
+
+/* typing indicator */
+.screen .thinking,.screen .typing{background:var(--wa-in);border-radius:7.5px;box-shadow:var(--wa-shadow);color:var(--wa-meta);margin-top:8px}
+.screen .thinking i,.screen .typing i{background:var(--wa-meta)}
+
+/* footer: reply buttons on the wallpaper, input bar below */
+.screen .ph-foot{background:transparent;border-top:0;padding:4px 0 0;gap:6px}
+.screen .chips{padding:0 12px;gap:4px}
+.screen .chip{flex:1 1 auto;justify-content:center;border:0;background:var(--wa-chip);color:var(--wa-link);border-radius:7.5px;box-shadow:var(--wa-shadow);padding:9px 12px;font-weight:500;font-size:14px;font-family:var(--wa-font)}
+.screen .chip:hover{background:var(--wa-chip);filter:brightness(.97)}
+.screen .chip.ghost{border:0;color:var(--wa-ink);font-weight:400}
+.screen .chip.kn{font-family:var(--f-kn)}
+.screen .recbar{padding:0 14px}
+.screen .michint{order:3;padding:0 14px;color:var(--wa-meta);font-size:12px;text-align:center}
+
+/* live app input row: [ message field ][ send or mic ] */
+.screen .inbar{order:4;background:var(--wa-bar);padding:6px 8px 8px;gap:6px;align-items:flex-end}
+.screen .inbar .tbox{order:1;background:var(--wa-field);color:var(--wa-ink);border:0;border-radius:24px;padding:11px 16px;font-family:var(--wa-font);font-size:15px;min-height:44px}
+.screen .inbar .tbox::placeholder{color:var(--wa-meta)}
+.screen .inbar .send{order:2}
+.screen .inbar .mic{order:3}
+.screen .mic,.screen .send{width:46px;height:46px;background:var(--wa-green);color:#fff}
+.screen .mic:disabled,.screen .send:disabled{background:var(--wa-green);color:#fff;opacity:.45}
+.screen .mic.rec{background:#ea0038}
+.screen .inbar .tbox:placeholder-shown ~ .send{display:none}
+.screen .inbar:has(.tbox:not(:placeholder-shown)) .mic{display:none}
+
+/* scripted demo footer: [ hint in a message field ][ mic ] */
+.screen .microw{order:4;background:var(--wa-bar);padding:6px 8px 8px;gap:6px;flex-direction:row-reverse}
+.screen .microw .michint{flex:1;order:0;text-align:left;background:var(--wa-field);color:var(--wa-meta);border-radius:24px;padding:12px 16px;font-size:13px;line-height:1.35;min-height:44px;display:block}
+.screen .microw .michint b{color:var(--wa-ink)}
